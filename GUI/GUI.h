@@ -12,10 +12,12 @@
 
 #include "../Scene/Scene.h"
 
+#define BORDER 20
+
 class GUI {
 public:
 
-    GUI(std::string title, int defaultWidth = 200, int defaultHeight = 200)
+    GUI(std::string title, int defaultWidth = 600, int defaultHeight = 400)
             : title(title), defaultWith(defaultWidth), defaultHeight(defaultHeight){
         initWindow();
         isWindowDestroyed = false;
@@ -38,7 +40,7 @@ private:
     bool isWindowDestroyed;
 
     void initWindow();
-    void renderWindow();
+    void renderWindow(Scene2D& scene);
     void closeWindow();
 
 };

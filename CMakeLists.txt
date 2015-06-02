@@ -9,3 +9,4 @@ add_executable(Graphics ${SOURCE_FILES} VectorMath/Vector.h VectorMath/VectorMat
 add_subdirectory(GLFW/glfw-3.1.1)
 include_directories(GLFW/glfw-3.1.1/include)
 target_link_libraries(Graphics glfw ${GLFW_LIBRARIES})
+target_link_libraries(Graphics glfw ${OPENGL_glu_LIBRARY} ${GLFW_LIBRARIES})

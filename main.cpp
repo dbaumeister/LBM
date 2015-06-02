@@ -5,16 +5,15 @@
 int main(void)
 {
 
-    GUI gui("GraphicsApp");
     Scene2D scene(128, 128);
     FluidSolver solver(scene);
 
-    //TODO open  in a new thread -> should not stop others from executing
+    GUI gui("GraphicsApp");
+
     while(!gui.shouldClose()){
         solver.next();
         gui.display(scene);
     }
-
 
     return 0;
 }

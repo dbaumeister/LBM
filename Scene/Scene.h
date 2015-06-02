@@ -14,6 +14,14 @@ public:
             : xDim(xDim), yDim(yDim), vel(xDim, yDim), pressure(xDim, yDim), density(xDim, yDim) {}
 
 
+    int getDimX(){
+        return xDim;
+    }
+
+    int getDimY(){
+        return yDim;
+    }
+
 private:
     int xDim, yDim;
 
