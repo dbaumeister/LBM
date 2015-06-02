@@ -83,7 +83,7 @@ public:
     }
 
 
-    std::string toString() {
+    std::string toString() const {
         std::stringstream out;
 
         for(int k = 0; k < dimZ; ++k){
@@ -131,5 +131,16 @@ private:
     }
 };
 
+
+std::ostream& operator <<(std::ostream& stream, RealGrid& grid){
+    stream << grid.toString();
+    return stream;
+}
+
+template <class T>
+std::ostream& operator <<(std::ostream& stream, VectorGrid<T>& grid){
+    stream << grid.toString();
+    return stream;
+}
 
 #endif //GRAPHICS_GRID_H

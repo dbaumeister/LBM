@@ -9,6 +9,7 @@
 #include <string>
 #include <stdint.h>
 #include <malloc.h>
+#include <math.h>
 
 template<class T>
 class Vector3D{
@@ -38,9 +39,25 @@ public:
         z += other.z;
     }
 
+    void operator -=(Vector3D<T>& other){
+        x -= other.x;
+        y -= other.y;
+        z -= other.z;
+    }
+
     T dot(Vector3D<T>& other){
         return x * other.x + y * other.y + z * other.z;
     }
+
+    T norm(){
+        return sqrt(x * x + y * y + z * z);
+    }
 };
+
+template <class T>
+std::ostream& operator <<(std::ostream& stream, Vector3D<T> vector){
+    stream << vector.toString();
+    return stream;
+}
 
 #endif //GRAPHICS_VECTOR_H

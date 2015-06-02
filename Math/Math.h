@@ -18,6 +18,27 @@ Vector3D<T> operator +(Vector3D<T> left, Vector3D<T> right){
 }
 
 template <class T>
+Vector3D<T> operator -(Vector3D<T> left, Vector3D<T> right){
+    Vector3D<T> out(left);
+    out -= right;
+    return out;
+}
+
+/*
+ * Cross product
+ */
+template <class T>
+Vector3D<T> operator %(Vector3D<T> left, Vector3D<T> right){
+    Vector3D<T> out(
+            left.y * right.z - left.z * right.y,
+            left.z * right.x - left.x * right.z,
+            left.x * right.y - left.y * right.x
+    );
+    return out;
+}
+
+
+template <class T>
 T operator *(Vector3D<T> left, Vector3D<T> right){
     Vector3D<T> out(left);
     return out.dot(right);
