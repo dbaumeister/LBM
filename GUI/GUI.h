@@ -33,6 +33,7 @@ private:
     bool isWindowDestroyed;
 
     void initWindow();
+    void renderWindow();
     void closeWindow();
 
 };
