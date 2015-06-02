@@ -15,14 +15,15 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-void GUI::display(){
 
-    while (!glfwWindowShouldClose(window))
-    {
-        renderWindow();
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
+bool GUI::shouldClose() {
+    glfwPollEvents();
+    return glfwWindowShouldClose(window) != 0;
+}
+
+void GUI::display(Scene2D& scene){ //todo: draw scene once
+    renderWindow();
+    glfwSwapBuffers(window);
 }
 
 void GUI::renderWindow() {

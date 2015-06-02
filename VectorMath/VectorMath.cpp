@@ -1,14 +1,8 @@
 //
-// Created by dbaumeister on 21.05.15.
+// Created by dbaumeister on 02.06.15.
 //
 
-#ifndef GRAPHICS_GMATH_H
-#define GRAPHICS_GMATH_H
-
-#include "Vector.h"
-
-#define Real float
-
+#include "VectorMath.h"
 
 template <class T>
 Vector3D<T> operator +(Vector3D<T> left, Vector3D<T> right){
@@ -55,5 +49,3 @@ Vector3D<Real> operator *(Vector3D<Real> left, Real v){
     out *= v;
     return out;
 }
-
-#endif //GRAPHICS_GMATH_H

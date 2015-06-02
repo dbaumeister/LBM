@@ -55,9 +55,6 @@ public:
 };
 
 template <class T>
-std::ostream& operator <<(std::ostream& stream, Vector3D<T> vector){
-    stream << vector.toString();
-    return stream;
-}
+std::ostream& operator <<(std::ostream& stream, Vector3D<T> vector);
 
 #endif //GRAPHICS_VECTOR_H

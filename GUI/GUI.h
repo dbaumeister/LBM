@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <string>
 
+#include "../Scene/Scene.h"
+
 class GUI {
 public:
 
@@ -24,7 +26,10 @@ public:
             closeWindow();
     }
 
-    void display();
+    bool shouldClose();
+    void display(Scene2D& scene);
+
+
 
 private:
     std::string title;

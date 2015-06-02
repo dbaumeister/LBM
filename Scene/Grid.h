@@ -9,19 +9,17 @@
 #include <sstream>
 #include <stdint.h>
 #include <stdlib.h>
-#include "Math.h"
-#include "Vector.h"
+#include "../VectorMath/VectorMath.h"
 
 class RealGrid {
 public:
-    RealGrid(uint64_t dimX, uint64_t dimY, uint64_t dimZ = 1) : dimX(dimX), dimY(dimY), dimZ(dimZ) {
+    RealGrid(int dimX, int dimY, int dimZ = 1) : dimX(dimX), dimY(dimY), dimZ(dimZ) {
         values = (Real*) calloc(dimZ * dimY * dimX, sizeof(Real));
     }
 
     ~RealGrid() {
         free(values);
     }
-
 
     std::string toString() {
         std::stringstream out;
@@ -39,32 +37,26 @@ public:
         }
         return out.str();
     }
-    /*
-     * Prints the grid at z = slice
-     */
-    void print(uint64_t slice){
 
-    }
-
-    Real& operator()(uint64_t x, uint64_t y, uint64_t z = 0){
+    Real& operator()(int x, int y, int z = 0){
         return values[offset(x, y, z)];
     }
 
-    uint64_t getDimX(){
+    int getDimX(){
         return dimX;
     }
-    uint64_t getDimY(){
+    int getDimY(){
         return dimY;
     }
-    uint64_t getDimZ(){
+    int getDimZ(){
         return dimZ;
     }
 
 private:
-    uint64_t dimX, dimY, dimZ;
+    int dimX, dimY, dimZ;
     Real* values;
 
-    uint64_t offset(uint64_t x, uint64_t y, uint64_t z) {
+    int offset(int x, int y, int z) {
         return x + y * dimX + z * dimX * dimY;
     }
 };
@@ -74,7 +66,7 @@ private:
 template <class T>
 class VectorGrid {
 public:
-    VectorGrid(uint64_t dimX, uint64_t dimY, uint64_t dimZ = 1) : dimX(dimX), dimY(dimY), dimZ(dimZ) {
+    VectorGrid(int dimX, int dimY, int dimZ = 1) : dimX(dimX), dimY(dimY), dimZ(dimZ) {
         values = (Vector3D<T>*) calloc(dimZ * dimY * dimX, sizeof(Vector3D<T>));
     }
 
@@ -83,7 +75,7 @@ public:
     }
 
 
-    std::string toString() const {
+    std::string toString() {
         std::stringstream out;
 
         for(int k = 0; k < dimZ; ++k){
@@ -100,47 +92,34 @@ public:
         return out.str();
     }
 
-    /*
-     * Prints the grid at z = slice
-     */
-    void print(uint64_t slice){
-
-    }
-
-    Vector3D<T>& operator()(uint64_t x, uint64_t y, uint64_t z = 0){
+    Vector3D<T>& operator()(int x, int y, int z = 0){
         return values[offset(x, y, z)];
     }
 
 
-    uint64_t getDimX(){
+    int getDimX(){
         return dimX;
     }
-    uint64_t getDimY(){
+    int getDimY(){
         return dimY;
     }
-    uint64_t getDimZ(){
+    int getDimZ(){
         return dimZ;
     }
 
 private:
-    uint64_t dimX, dimY, dimZ;
+    int dimX, dimY, dimZ;
     Vector3D<T>* values;
 
-    uint64_t offset(uint64_t x, uint64_t y, uint64_t z) {
+    int offset(int x, int y, int z) {
         return x + y * dimX + z * dimX * dimY;
     }
 };
 
 
-std::ostream& operator <<(std::ostream& stream, RealGrid& grid){
-    stream << grid.toString();
-    return stream;
-}
+std::ostream& operator <<(std::ostream& stream, RealGrid& grid);
 
 template <class T>
-std::ostream& operator <<(std::ostream& stream, VectorGrid<T>& grid){
-    stream << grid.toString();
-    return stream;
-}
+std::ostream& operator <<(std::ostream& stream, VectorGrid<T>& grid);
 
 #endif //GRAPHICS_GRID_H
