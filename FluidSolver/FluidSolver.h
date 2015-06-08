@@ -17,8 +17,8 @@ private:
     Scene2D& scene;
 
 
-    void applyForces();
     void advectVelocities();
+    void applyForces();
     void computeDivergence(RealGrid& div);
     void computeOffDiag(RealGrid& offdiag);
     void computeDiag(RealGrid& diag, RealGrid& offdiag);

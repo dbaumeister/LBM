@@ -18,6 +18,8 @@ int main(void)
     //initial object
     int size = scene.getDimY() / 10 ;
     applyDensityBlock(scene, scene.getDimX() / 2 - size / 2, scene.getDimY() / 3 - size / 2, size, size, 0.75f);
+    applyVelocityBlock(scene, scene.getDimX() / 2 - size / 2, scene.getDimY() / 3 - size / 2, size, size, Vector3D(0, 0.5, 0));
+
 
     FluidSolver solver(scene);
 

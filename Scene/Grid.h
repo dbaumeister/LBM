@@ -80,6 +80,17 @@ public:
     }
 
 
+    void set(RealGrid& grid){
+        for(int k = 0; k < getDimZ(); ++k){
+            for (int j = 0; j < getDimY(); ++j) {
+                for (int i = 0; i < getDimX(); ++i) {
+                    values[offset(i, j, k)] = grid(i, j, k);
+                }
+            }
+        }
+    }
+
+
 private:
     int dimX, dimY, dimZ;
     Real* values;
@@ -149,6 +160,17 @@ public:
                     values[offset(i, j, k)].x = 0;
                     values[offset(i, j, k)].y = 0;
                     values[offset(i, j, k)].z = 0;
+                }
+            }
+        }
+    }
+
+
+    void set(VectorGrid& grid){
+        for(int k = 0; k < getDimZ(); ++k){
+            for (int j = 0; j < getDimY(); ++j) {
+                for (int i = 0; i < getDimX(); ++i) {
+                    values[offset(i, j, k)] = grid(i, j, k);
                 }
             }
         }

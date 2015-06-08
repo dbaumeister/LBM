@@ -17,8 +17,30 @@ void FluidSolver::applyForces() {
 
 void FluidSolver::advectVelocities(){
     VectorGrid advVel(scene.getDimX(), scene.getDimY());
-    //TODO
-    //scene.vel = advVel;
+
+    for (int j = 1; j < scene.getDimY() - 1; ++j) {
+        for (int i = 1; i < scene.getDimX() - 1; ++i) {
+
+            Real ib = i - scene.getDt() * (scene.vel(i + 1, j).x + scene.vel(i, j).x) / 2.f;
+            Real jb = j - scene.getDt() * (scene.vel(i, j + 1).y + scene.vel(i, j).y) / 2.f;
+
+            if(ib > 0 && ib < scene.getDimX() - 1 && jb > 0 && jb < scene.getDimY() - 1){
+
+                Real ri = ib - floorf(ib);
+                Real rj = jb - floorf(jb);
+
+                Vector3D d00 = (1.f - rj) * (1.f - ri) * scene.vel((int)ib, (int)jb);
+                Vector3D d10 = (1.f - rj) * ri * scene.vel((int)ib + 1, (int)jb);
+                Vector3D d01 = rj * (1.f - ri) * scene.vel((int)ib, (int)jb + 1);
+                Vector3D d11 = rj * ri * scene.vel((int)ib + 1, (int)jb + 1);
+
+                advVel(i, j) = d00 + d10 + d11 + d01;
+
+            } else advVel(i, j) = 0;
+
+        }
+    }
+    scene.vel.set(advVel);
 }
 
 void FluidSolver::computeDivergence(RealGrid& div) {
@@ -88,17 +110,13 @@ void FluidSolver::advectDensity(){
         }
     }
 
-    for (int j = 1; j < scene.getDimY() - 1; ++j) {
-        for (int i = 1; i < scene.getDimX() - 1; ++i) {
-            scene.density(i, j) = advDen(i, j);
-        }
-    }
+    scene.density.set(advDen);
 
 }
 
 void FluidSolver::next() {
+    advectVelocities();
     applyForces();
-    //advectVelocities();
 
     //RealGrid divergence(scene.getDimX(), scene.getDimY());
     //computeDivergence(divergence);
