@@ -70,22 +70,41 @@ void FluidSolver::computeDiag(RealGrid& diag, RealGrid& offdiag){
     }
 }
 
-Real gridNorm(RealGrid& grid){
-    return 0;
+Real FluidSolver::gridNorm(RealGrid& grid){
+    Real sum = 0;
+    for (int j = 1; j < scene.getDimY() - 1; ++j) {
+        for (int i = 1; i < scene.getDimX() - 1; ++i) {
+            sum += fabsf(grid(i, j));
+        }
+    }
+    return sum;
 }
 
-void applyIterativeStep(RealGrid& residual, RealGrid& divergence, RealGrid& diag, RealGrid& offdiag){
+void FluidSolver::applyIterativeStep(RealGrid& residual, RealGrid& divergence, RealGrid& diag, RealGrid& offdiag){
+    for (int j = 1; j < scene.getDimY() - 1; ++j) {
+        for (int i = 1; i < scene.getDimX() - 1; ++i) {
+            residual(i, j) = - 1.f * divergence(i, j) - diag(i, j) * scene.pressure(i, j)
+                             - offdiag(i - 1, j) * scene.pressure(i - 1, j)
+                               - offdiag(i + 1, j) * scene.pressure(i + 1, j)
+                                 - offdiag(i, j - 1) * scene.pressure(i, j - 1)
+                                   - offdiag(i, j + 1) * scene.pressure(i, j + 1);
 
+            scene.pressure(i, j) = scene.pressure(i, j) + 1.f / diag(i, j) * residual(i, j);
+        }
+    }
 }
 
 void FluidSolver::solvePressure(RealGrid& divergence, RealGrid& diag, RealGrid& offdiag){
     //use scene.pressure
     RealGrid residual(scene.getDimX(), scene.getDimY());
-
-    for(int n = 0; n < iterations; ++n){
+    int n = 0;
+    Real acc;
+    for(; n < iterations; ++n){
         applyIterativeStep(residual, divergence, diag, offdiag);
-        if(accuracy > gridNorm(residual)) break;
+        acc = gridNorm(residual);
+        if(accuracy > acc) break;
     }
+    std::cout << "Solve after " << n << " steps. (Accuracy: " << acc << ")" << std::endl;
 }
 
 void FluidSolver::correctVelocity(){

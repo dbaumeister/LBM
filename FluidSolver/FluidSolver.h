@@ -33,6 +33,8 @@ private:
     void computeDivergence(RealGrid& div);
     void computeOffDiag(RealGrid& offdiag);
     void computeDiag(RealGrid& diag, RealGrid& offdiag);
+    Real gridNorm(RealGrid& grid);
+    void applyIterativeStep(RealGrid& residual, RealGrid& divergence, RealGrid& diag, RealGrid& offdiag);
     void solvePressure(RealGrid& divergence, RealGrid& diag, RealGrid& offdiag);
     void correctVelocity();
     void advectDensity();
