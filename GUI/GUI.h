@@ -10,14 +10,16 @@
 #include <stdio.h>
 #include <string>
 
+#include "../General/Definitions.h"
 #include "../Scene/Scene.h"
 
-#define BORDER 20
+
+static const float IMAGESCALE = 0.9f;
 
 class GUI {
 public:
 
-    GUI(std::string title, int defaultWidth = 600, int defaultHeight = 400)
+    GUI(std::string title, int defaultWidth = 600, int defaultHeight = 600)
             : title(title), defaultWith(defaultWidth), defaultHeight(defaultHeight){
         initWindow();
         isWindowDestroyed = false;
@@ -30,6 +32,7 @@ public:
 
     bool shouldClose();
     void display(Scene2D& scene);
+    double getTime();
 
 
 

@@ -9,13 +9,18 @@
 #include <sstream>
 #include <stdint.h>
 #include <stdlib.h>
-#include "../VectorMath/VectorMath.h"
+#include <assert.h>
+#include "../General/Definitions.h"
+#include "../VectorMath/Vector.h"
 
 class RealGrid {
 public:
     RealGrid(int dimX, int dimY, int dimZ = 1) : dimX(dimX), dimY(dimY), dimZ(dimZ) {
-        values = (Real*) calloc(dimZ * dimY * dimX, sizeof(Real));
+        values = (Real*) calloc((size_t) dimZ * (size_t)dimY * (size_t)dimX, sizeof(Real));
+        clear();
     }
+
+    explicit RealGrid(RealGrid& grid) = delete;
 
     ~RealGrid() {
         free(values);
@@ -38,8 +43,20 @@ public:
         return out.str();
     }
 
-    Real& operator()(int x, int y, int z = 0){
+    Real& at(int x, int y, int z){
         return values[offset(x, y, z)];
+    }
+
+    Real& at(int x, int y){
+        return values[offset(x, y, 0)];
+    }
+
+    Real& operator()(int x, int y, int z){
+        return values[offset(x, y, z)];
+    }
+
+    Real& operator()(int x, int y){
+        return values[offset(x, y, 0)];
     }
 
     int getDimX(){
@@ -52,6 +69,17 @@ public:
         return dimZ;
     }
 
+    void clear(){
+        for(int k = 0; k < dimZ; ++k){
+            for(int j = 0; j < dimY; ++j){
+                for(int i = 0; i < dimX; ++i){
+                    values[offset(i, j, k)] = 0;
+                }
+            }
+        }
+    }
+
+
 private:
     int dimX, dimY, dimZ;
     Real* values;
@@ -63,12 +91,15 @@ private:
 
 
 
-template <class T>
 class VectorGrid {
 public:
     VectorGrid(int dimX, int dimY, int dimZ = 1) : dimX(dimX), dimY(dimY), dimZ(dimZ) {
-        values = (Vector3D<T>*) calloc(dimZ * dimY * dimX, sizeof(Vector3D<T>));
+        values = (Vector3D*) calloc((size_t)dimZ * (size_t)dimY * (size_t)dimX, sizeof(Vector3D));
+        clear();
     }
+
+
+    explicit VectorGrid(VectorGrid& grid) = delete;
 
     ~VectorGrid() {
         free(values);
@@ -92,8 +123,12 @@ public:
         return out.str();
     }
 
-    Vector3D<T>& operator()(int x, int y, int z = 0){
+    Vector3D& operator()(int x, int y, int z){
         return values[offset(x, y, z)];
+    }
+
+    Vector3D& operator()(int x, int y){
+        return values[offset(x, y, 0)];
     }
 
 
@@ -107,9 +142,21 @@ public:
         return dimZ;
     }
 
+    void clear(){
+        for(int k = 0; k < dimZ; ++k){
+            for(int j = 0; j < dimY; ++j){
+                for(int i = 0; i < dimX; ++i){
+                    values[offset(i, j, k)].x = 0;
+                    values[offset(i, j, k)].y = 0;
+                    values[offset(i, j, k)].z = 0;
+                }
+            }
+        }
+    }
+
 private:
     int dimX, dimY, dimZ;
-    Vector3D<T>* values;
+    Vector3D* values;
 
     int offset(int x, int y, int z) {
         return x + y * dimX + z * dimX * dimY;
@@ -119,7 +166,7 @@ private:
 
 std::ostream& operator <<(std::ostream& stream, RealGrid& grid);
 
-template <class T>
-std::ostream& operator <<(std::ostream& stream, VectorGrid<T>& grid);
+std::ostream& operator <<(std::ostream& stream, VectorGrid& grid);
+
 
 #endif //GRAPHICS_GRID_H

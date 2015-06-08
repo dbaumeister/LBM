@@ -9,8 +9,7 @@ std::ostream& operator <<(std::ostream& stream, RealGrid& grid){
     return stream;
 }
 
-template <class T>
-std::ostream& operator <<(std::ostream& stream, VectorGrid<T>& grid){
+std::ostream& operator <<(std::ostream& stream, VectorGrid& grid){
     stream << grid.toString();
     return stream;
 }
