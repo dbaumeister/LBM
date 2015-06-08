@@ -44,8 +44,8 @@ void FluidSolver::advectVelocities(){
 }
 
 void FluidSolver::computeDivergence(RealGrid& div) {
-    for (int i = 1; i < scene.getDimX() - 1; ++i) {
-        for (int j = 1; j < scene.getDimY() - 1; ++j) {
+    for (int j = 1; j < scene.getDimY() - 1; ++j) {
+        for (int i = 1; i < scene.getDimX() - 1; ++i) {
             div.at(i, j) = scene.vel(i + 1, j).x - scene.vel(i, j).x
                                                    + scene.vel(i, j + 1).y - scene.vel(i, j).y;
         }
@@ -55,29 +55,42 @@ void FluidSolver::computeDivergence(RealGrid& div) {
 
 void FluidSolver::computeOffDiag(RealGrid& offdiag){
 
-    for (int i = 1; i < scene.getDimX() - 1; ++i) {
-        for (int j = 1; j < scene.getDimY() - 1; ++j) {
+    for (int j = 1; j < scene.getDimY() - 1; ++j) {
+        for (int i = 1; i < scene.getDimX() - 1; ++i) {
             offdiag.at(i, j) = -1.f;
         }
     }
 }
 
 void FluidSolver::computeDiag(RealGrid& diag, RealGrid& offdiag){
-    for (int i = 1; i < scene.getDimX() - 1; ++i) {
-        for (int j = 1; j < scene.getDimY() - 1; ++j) {
+    for (int j = 1; j < scene.getDimY() - 1; ++j) {
+        for (int i = 1; i < scene.getDimX() - 1; ++i) {
             diag.at(i, j) = -1.f * (offdiag(i - 1, j) + offdiag(i + 1, j) + offdiag(i, j - 1) + offdiag(i, j + 1));
         }
     }
 }
 
+Real gridNorm(RealGrid& grid){
+    return 0;
+}
 
-void FluidSolver::solvePressure(RealGrid& divergence, RealGrid& diag, RealGrid& offdiag){
+void applyIterativeStep(RealGrid& residual, RealGrid& divergence, RealGrid& diag, RealGrid& offdiag){
 
 }
 
+void FluidSolver::solvePressure(RealGrid& divergence, RealGrid& diag, RealGrid& offdiag){
+    //use scene.pressure
+    RealGrid residual(scene.getDimX(), scene.getDimY());
+
+    for(int n = 0; n < iterations; ++n){
+        applyIterativeStep(residual, divergence, diag, offdiag);
+        if(accuracy > gridNorm(residual)) break;
+    }
+}
+
 void FluidSolver::correctVelocity(){
-    for (int i = 1; i < scene.getDimX() - 1; ++i) {
-        for (int j = 1; j < scene.getDimY() - 1; ++j) {
+    for (int j = 1; j < scene.getDimY() - 1; ++j) {
+        for (int i = 1; i < scene.getDimX() - 1; ++i) {
             scene.vel(i, j).x -= scene.pressure(i + 1, j) - scene.pressure(i, j);
             scene.vel(i, j).y -= scene.pressure(i, j + 1) - scene.pressure(i, j);
         }
@@ -118,17 +131,17 @@ void FluidSolver::next() {
     advectVelocities();
     applyForces();
 
-    //RealGrid divergence(scene.getDimX(), scene.getDimY());
-    //computeDivergence(divergence);
+    RealGrid divergence(scene.getDimX(), scene.getDimY());
+    computeDivergence(divergence);
 
-    //RealGrid offdiag(scene.getDimX(), scene.getDimY());
-    //computeOffDiag(offdiag);
+    RealGrid offdiag(scene.getDimX(), scene.getDimY());
+    computeOffDiag(offdiag);
 
-    //RealGrid diag(scene.getDimX(), scene.getDimY());
-    //computeDiag(diag, offdiag);
+    RealGrid diag(scene.getDimX(), scene.getDimY());
+    computeDiag(diag, offdiag);
 
-    //solvePressure(divergence, diag, offdiag);
+    solvePressure(divergence, diag, offdiag);
 
-    //correctVelocity();
+    correctVelocity();
     advectDensity();
 }

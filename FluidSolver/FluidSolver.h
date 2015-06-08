@@ -9,13 +9,24 @@
 
 class FluidSolver {
 public:
-    FluidSolver(Scene2D& scene, Real dt = 0.1f) : scene(scene) {}
+    FluidSolver(Scene2D& scene, Real dt = 0.1f) : scene(scene), iterations(1000), accuracy(0.0001f) {}
+
+    void setMaxIterations(int iterations){
+        this->iterations = iterations;
+    }
+
+    void setAccuracy(Real accuracy){
+        this->accuracy = accuracy;
+    }
+
 
     void next();
 
 private:
     Scene2D& scene;
 
+    int iterations;
+    Real accuracy;
 
     void advectVelocities();
     void applyForces();

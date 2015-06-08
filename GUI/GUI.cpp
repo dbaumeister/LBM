@@ -60,7 +60,7 @@ void drawDensity(Scene2D& scene) {
         for(int j = 0; j < scene.getDimY(); ++j){
 
             c = std::min(1.f, scene.density(i, j));
-            glColor3f(c ,c, c);
+            glColor3f(1.f - c, 1.f - c, 1.f - c);
 
             x = scaleX(i, scene.getDimX());
             y = scaleY(j, scene.getDimY());
@@ -87,7 +87,7 @@ void drawVelocity(Scene2D& scene) {
     glBegin(GL_LINES);
     Real x, y, z = 0.f;
     Real velScale = 2.f;
-    glColor3f(0.f, 1.f, 0.f);
+    glColor3f(0.9f, 0.f, 0.f);
 
     for(int i = 0; i < scene.getDimX() - 1; ++i){
         for(int j = 0; j < scene.getDimY() - 1; ++j){
@@ -151,6 +151,7 @@ void GUI::initWindow() {
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
     glfwSetKeyCallback(window, key_callback);
+    glClearColor(1.f,1.f,1.f,1.f);
 }
 
 void GUI::closeWindow() {
