@@ -22,7 +22,7 @@ bool GUI::shouldClose() {
     return glfwWindowShouldClose(window) != 0;
 }
 
-void GUI::display(Scene2D& scene){ //todo: draw scene once
+void GUI::display(Scene2D& scene){
     renderWindow(scene);
     glfwSwapBuffers(window);
 }
@@ -116,7 +116,7 @@ void GUI::renderWindow(Scene2D& scene) {
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
 
-    // Set background color
+    // Clear background
     glClear(GL_COLOR_BUFFER_BIT);
 
 
@@ -152,6 +152,8 @@ void GUI::initWindow() {
     glfwSwapInterval(1);
     glfwSetKeyCallback(window, key_callback);
     glClearColor(1.f,1.f,1.f,1.f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glfwSwapBuffers(window);
 }
 
 void GUI::closeWindow() {

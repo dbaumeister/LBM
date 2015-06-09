@@ -37,6 +37,7 @@ private:
     void applyIterativeStep(RealGrid& residual, RealGrid& divergence, RealGrid& diag, RealGrid& offdiag);
     void solvePressure(RealGrid& divergence, RealGrid& diag, RealGrid& offdiag);
     void correctVelocity();
+    void setWallVelocities();
     void advectDensity();
 };
 

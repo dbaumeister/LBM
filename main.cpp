@@ -1,24 +1,23 @@
 #include <iostream>
+
 #include "GUI/GUI.h"
 #include "FluidSolver/FluidSolver.h"
 
 
 #define TIMESTEP 1.0/60
 
+
 int main(void)
 {
 
     Scene2D scene(64, 64);
 
+    //source
+    int sheight = scene.getDimY() * 0.05;
+    int swidth = scene.getDimX() * 0.2;
 
-    //initial water
-    int height = scene.getDimY() / 4;
-    applyDensityBlock(scene, 1, scene.getDimY() - height - 1, scene.getDimX() - 2, height, 0.75f);
-
-    //initial object
-    int size = scene.getDimY() / 10 ;
-    applyDensityBlock(scene, scene.getDimX() / 2 - size / 2, scene.getDimY() / 3 - size / 2, size, size, 0.75f);
-    applyVelocityBlock(scene, scene.getDimX() / 2 - size / 2, scene.getDimY() / 3 - size / 2, size, size, Vector3D(0, 0.5, 0));
+    applyDensityBlock(scene, scene.getDimX() / 2 - swidth / 2, scene.getDimY() - scene.getDimY() / 5 - sheight / 2, swidth, sheight, 0.75f);
+    //applyVelocityBlock(scene, scene.getDimX() / 2 - swidth / 2, scene.getDimY() - scene.getDimY() / 5 - sheight / 2, swidth, sheight, Vector3D(0, 0.5, 0));
 
 
     FluidSolver solver(scene);
@@ -26,6 +25,7 @@ int main(void)
     GUI gui("GraphicsApp");
 
     double t = TIMESTEP;
+
     while(!gui.shouldClose()){
 
         if(gui.getTime() - t < TIMESTEP) continue;
@@ -34,5 +34,6 @@ int main(void)
         solver.next();
         gui.display(scene);
     }
+
     return 0;
 }

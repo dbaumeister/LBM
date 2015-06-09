@@ -96,6 +96,12 @@ private:
     Real* values;
 
     int offset(int x, int y, int z) {
+        assert(x >= 0);
+        assert(y >= 0);
+        assert(z >= 0);
+        assert(x < dimX);
+        assert(y < dimY);
+        assert(z < dimZ);
         return x + y * dimX + z * dimX * dimY;
     }
 };
@@ -181,6 +187,12 @@ private:
     Vector3D* values;
 
     int offset(int x, int y, int z) {
+        assert(x >= 0);
+        assert(y >= 0);
+        assert(z >= 0);
+        assert(x < dimX);
+        assert(y < dimY);
+        assert(z < dimZ);
         return x + y * dimX + z * dimX * dimY;
     }
 };
