@@ -30,7 +30,7 @@ private:
 
     void advectVelocities();
     void applyForces();
-    void computeDivergence(RealGrid& div);
+    void computeDivergence(RealGrid& divergence);
     void computeOffDiag(RealGrid& offdiag);
     void computeDiag(RealGrid& diag, RealGrid& offdiag);
     Real gridNorm(RealGrid& grid);

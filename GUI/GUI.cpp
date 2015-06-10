@@ -28,12 +28,12 @@ void GUI::display(Scene2D& scene){
 }
 
 // Mapping von
-// 0/0 -------- 128-1/0
-//  |                |
-//  |                |
-//  |                |
-//  |                |
 // 0/128-1------128-1/128-1
+//  |                |
+//  |                |
+//  |                |
+//  |                |
+// 0/0 -------- 128-1/0
 
 //auf
 // -1/1 ----------- 1/1
@@ -43,12 +43,12 @@ void GUI::display(Scene2D& scene){
 //   |               |
 // -1/-1------------1/-1
 
-inline float scaleX(int i, int dimX){
+inline float scaleX(Real i, int dimX){
     return IMAGESCALE * (i / (0.5f * (dimX)) - 1.f);
 }
 
-inline float scaleY(int j, int dimY){
-    return IMAGESCALE * (1.f - j / (0.5f * (dimY)));
+inline float scaleY(Real j, int dimY){
+    return IMAGESCALE * (j / (0.5f * (dimY)) - 1.f);
 }
 
 
@@ -92,15 +92,15 @@ void drawVelocity(Scene2D& scene) {
     for(int i = 0; i < scene.getDimX() - 1; ++i){
         for(int j = 0; j < scene.getDimY() - 1; ++j){
 
-            x = scaleX(i, scene.getDimX());
-            y = scaleY(j, scene.getDimY());
+            x = scaleX(i + 0.5f, scene.getDimX());
+            y = scaleY(j + 0.5f, scene.getDimY());
 
             glVertex3f(x, y, z);
 
             Real velX = (scene.vel(i, j).x + scene.vel(i + 1, j).x) / 2.f;
             Real velY = (scene.vel(i, j).y + scene.vel(i, j + 1).y) / 2.f;
-            x = scaleX(i, scene.getDimX()) +  velX * velScale * IMAGESCALE / (scene.getDimX() - 1.f);
-            y = scaleY(j, scene.getDimY()) +  velY * velScale * IMAGESCALE / (scene.getDimY() - 1.f);
+            x = scaleX(i + 0.5f, scene.getDimX()) +  velX * velScale * IMAGESCALE / (scene.getDimX() - 1.f);
+            y = scaleY(j + 0.5f, scene.getDimY()) +  velY * velScale * IMAGESCALE / (scene.getDimY() - 1.f);
 
             glVertex3f(x, y, z);
 

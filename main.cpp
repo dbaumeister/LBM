@@ -13,12 +13,8 @@ int main(void)
     Scene2D scene(64, 64);
 
     //source
-    int sheight = scene.getDimY() * 0.05;
-    int swidth = scene.getDimX() * 0.2;
-
-    applyDensityBlock(scene, scene.getDimX() / 2 - swidth / 2, scene.getDimY() - scene.getDimY() / 5 - sheight / 2, swidth, sheight, 0.75f);
-    //applyVelocityBlock(scene, scene.getDimX() / 2 - swidth / 2, scene.getDimY() - scene.getDimY() / 5 - sheight / 2, swidth, sheight, Vector3D(0, 0.5, 0));
-
+    int sheight = scene.getDimY() * 0.05f;
+    int swidth = scene.getDimX() * 0.2f;
 
     FluidSolver solver(scene);
 
@@ -30,6 +26,9 @@ int main(void)
 
         if(gui.getTime() - t < TIMESTEP) continue;
         t += TIMESTEP;
+
+        applyDensityBlock(scene, scene.getDimX() / 2 - swidth / 2, scene.getDimY() / 5 - sheight / 2, swidth, sheight, 0.75f);
+        applyVelocityBlock(scene, scene.getDimX() / 2 - swidth / 2, scene.getDimY() / 5 - sheight / 2, swidth, sheight, Vector3D(0, 0.5, 0));
 
         solver.next();
         gui.display(scene);

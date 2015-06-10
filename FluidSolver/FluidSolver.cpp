@@ -6,16 +6,17 @@
 #include "FluidSolver.h"
 
 void FluidSolver::applyForces() {
-    Vector3D buoyancy(0, -0.5f, 0);
+    Vector3D buoyancy(0, 0.5f, 0);
     buoyancy *= scene.getDt();
 
     for(int i = 1; i < scene.getDimX() - 1; ++i){
         for(int j = 1; j < scene.getDimY() - 1; ++j){
-                scene.vel(i,j) += buoyancy * (scene.density(i, j) - 0.5f);
+                //scene.vel(i,j) += buoyancy * (scene.density(i, j) - 0.5f);
         }
     }
 }
 
+//TODO koordinatensystem betrachen
 void FluidSolver::advectVelocities(){
     VectorGrid advVel(scene.getDimX(), scene.getDimY());
 
@@ -23,15 +24,15 @@ void FluidSolver::advectVelocities(){
         for (int i = 1; i < scene.getDimX() - 1; ++i) {
 
             //for the x-component:
-            Real ib = i - scene.getDt() * scene.vel(i, j).x;
+            Real ib = (i - 0.5f) - scene.getDt() * scene.vel(i, j).x;
             Real jb = j - scene.getDt()
                           * (scene.vel(i - 1, j - 1).y + scene.vel(i - 1, j).y +  + scene.vel(i, j).y  + scene.vel(i, j - 1).y)
                           / 4.f; //Interpolation to get the right velocity at where the x-component is stored
 
             if(ib > 0 && ib < scene.getDimX() - 1 && jb > 0 && jb < scene.getDimY() - 1){
 
-                Real ri = ib - floorf(ib);
-                Real rj = jb - floorf(jb);
+                Real ri = ib - (int)ib;
+                Real rj = jb - (int)jb;
 
                 Real d00 = (1.f - rj) * (1.f - ri) * scene.vel((int)ib, (int)jb).x;
                 Real d10 = (1.f - rj) * ri * scene.vel((int)ib + 1, (int)jb).x;
@@ -47,12 +48,12 @@ void FluidSolver::advectVelocities(){
             ib = i - scene.getDt()
                      * ( scene.vel(i, j).x + scene.vel(i + 1, j).x + scene.vel(i, j + 1).x + scene.vel(i + 1, j + 1).x)
                      / 4.f; //Interpolation to get the right velocity at where the y-component is stored
-            jb = j - scene.getDt() * scene.vel(i, j).y;
+            jb = (j - 0.5f) - scene.getDt() * scene.vel(i, j).y;
 
             if(ib > 0 && ib < scene.getDimX() - 1 && jb > 0 && jb < scene.getDimY() - 1){
 
-                Real ri = ib - floorf(ib);
-                Real rj = jb - floorf(jb);
+                Real ri = ib - (int)ib;
+                Real rj = jb - (int)jb;
 
                 Real d00 = (1.f - rj) * (1.f - ri) * scene.vel((int)ib, (int)jb).y;
                 Real d10 = (1.f - rj) * ri * scene.vel((int)ib + 1, (int)jb).y;
@@ -67,10 +68,10 @@ void FluidSolver::advectVelocities(){
     scene.vel.set(advVel);
 }
 
-void FluidSolver::computeDivergence(RealGrid& div) {
+void FluidSolver::computeDivergence(RealGrid& divergence) {
     for (int j = 1; j < scene.getDimY() - 1; ++j) {
         for (int i = 1; i < scene.getDimX() - 1; ++i) {
-            div.at(i, j) = scene.vel(i + 1, j).x - scene.vel(i, j).x
+            divergence(i, j) = scene.vel(i + 1, j).x - scene.vel(i, j).x
                                                    + scene.vel(i, j + 1).y - scene.vel(i, j).y;
         }
     }
@@ -82,9 +83,9 @@ void FluidSolver::computeOffDiag(RealGrid& offdiag){
     for (int j = 0; j < scene.getDimY(); ++j) {
         for (int i = 0; i < scene.getDimX(); ++i) {
             if(j > 0 && i > 0 &&  j < scene.getDimY() - 1 && i < scene.getDimX() - 1){
-                offdiag.at(i, j) = -1.f;
+                offdiag(i, j) = -1.f;
             } else {
-                offdiag.at(i, j) = 0.f;
+                offdiag(i, j) = 0.f;
             }
         }
     }
@@ -93,7 +94,7 @@ void FluidSolver::computeOffDiag(RealGrid& offdiag){
 void FluidSolver::computeDiag(RealGrid& diag, RealGrid& offdiag){
     for (int j = 1; j < scene.getDimY() - 1; ++j) {
         for (int i = 1; i < scene.getDimX() - 1; ++i) {
-            diag.at(i, j) = -offdiag(i - 1, j) - offdiag(i + 1, j) - offdiag(i, j - 1) - offdiag(i, j + 1);
+            diag(i, j) = -offdiag(i - 1, j) - offdiag(i + 1, j) - offdiag(i, j - 1) - offdiag(i, j + 1);
         }
     }
 }
@@ -112,7 +113,7 @@ void FluidSolver::applyIterativeStep(RealGrid& residual, RealGrid& divergence, R
     for (int j = 1; j < scene.getDimY() - 1; ++j) {
         for (int i = 1; i < scene.getDimX() - 1; ++i) {
             Real r = - divergence(i, j)
-                             - diag(i, j) * scene.pressure(i, j)
+                        - diag(i, j) * scene.pressure(i, j)
                              - offdiag(i - 1, j) * scene.pressure(i - 1, j)
                                - offdiag(i + 1, j) * scene.pressure(i + 1, j)
                                  - offdiag(i, j - 1) * scene.pressure(i, j - 1)
@@ -145,7 +146,7 @@ void FluidSolver::correctVelocity(){
         }
     }
 }
-
+//TODO: koordinatensystem abstimmen
 void FluidSolver::advectDensity(){
     RealGrid advDen(scene.getDimX(), scene.getDimY());
 
@@ -165,9 +166,9 @@ void FluidSolver::advectDensity(){
                 Real d01 = rj * (1.f - ri) * scene.density((int)ib, (int)jb + 1);
                 Real d11 = rj * ri * scene.density((int)ib + 1, (int)jb + 1);
 
-                advDen.at(i, j) = d00 + d10 + d11 + d01;
+                advDen(i, j) = d00 + d10 + d11 + d01;
 
-            } else advDen.at(i, j) = 0;
+            } else advDen(i, j) = 0;
 
         }
     }

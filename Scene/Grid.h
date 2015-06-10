@@ -43,14 +43,6 @@ public:
         return out.str();
     }
 
-    Real& at(int x, int y, int z){
-        return values[offset(x, y, z)];
-    }
-
-    Real& at(int x, int y){
-        return values[offset(x, y, 0)];
-    }
-
     Real& operator()(int x, int y, int z){
         return values[offset(x, y, z)];
     }
