@@ -7,9 +7,9 @@
 #define TIMESTEP 1.0/60
 
 
+
 int main(void)
 {
-
     Scene2D scene(64, 64);
 
     //source
@@ -33,6 +33,5 @@ int main(void)
         solver.next();
         gui.display(scene);
     }
-
     return 0;
 }

@@ -12,19 +12,19 @@
 
 class Scene2D {
 public:
-    Scene2D(int xDim, int yDim, Real dt = 0.1)
+    Scene2D(int xDim, int yDim, Real dt = 1.0)
             : xDim(xDim), yDim(yDim), vel(xDim, yDim), dt(dt), pressure(xDim, yDim), density(xDim, yDim) {}
 
 
-    int getDimX(){
+    inline int getDimX(){
         return xDim;
     }
 
-    int getDimY(){
+    inline int getDimY(){
         return yDim;
     }
 
-    Real getDt() {
+    inline Real getDt() {
         return dt;
     }
 

@@ -29,15 +29,18 @@ void FluidSolver::advectVelocities(){
                           * (scene.vel(i - 1, j - 1).y + scene.vel(i - 1, j).y +  + scene.vel(i, j).y  + scene.vel(i, j - 1).y)
                           / 4.f; //Interpolation to get the right velocity at where the x-component is stored
 
-            if(ib > 0 && ib < scene.getDimX() - 1 && jb > 0 && jb < scene.getDimY() - 1){
+            int in = advVel.getIndex(ib);
+            int jn = advVel.getIndex(jb);
 
-                Real ri = ib - (int)ib;
-                Real rj = jb - (int)jb;
+            if(in >= 0 && in < scene.getDimX() - 1 && jn >= 0 && jn < scene.getDimY() - 1){
 
-                Real d00 = (1.f - rj) * (1.f - ri) * scene.vel((int)ib, (int)jb).x;
-                Real d10 = (1.f - rj) * ri * scene.vel((int)ib + 1, (int)jb).x;
-                Real d01 = rj * (1.f - ri) * scene.vel((int)ib, (int)jb + 1).x;
-                Real d11 = rj * ri * scene.vel((int)ib + 1, (int)jb + 1).x;
+                Real di = ib - in;
+                Real dj = jb - jn;
+
+                Real d00 = (1.f - dj) * (1.f - di) * scene.vel(in, jn).x;
+                Real d10 = (1.f - dj) * di * scene.vel(in + 1, jn).x;
+                Real d01 = dj * (1.f - di) * scene.vel(in, jn + 1).x;
+                Real d11 = dj * di * scene.vel(in + 1, jn + 1).x;
 
                 advVel(i, j).x = d00 + d10 + d11 + d01;
 
@@ -50,22 +53,25 @@ void FluidSolver::advectVelocities(){
                      / 4.f; //Interpolation to get the right velocity at where the y-component is stored
             jb = (j - 0.5f) - scene.getDt() * scene.vel(i, j).y;
 
-            if(ib > 0 && ib < scene.getDimX() - 1 && jb > 0 && jb < scene.getDimY() - 1){
+            in = advVel.getIndex(ib);
+            jn = advVel.getIndex(jb);
 
-                Real ri = ib - (int)ib;
-                Real rj = jb - (int)jb;
+            if(in >= 0 && in < scene.getDimX() - 1 && jn >= 0 && jn < scene.getDimY() - 1){
 
-                Real d00 = (1.f - rj) * (1.f - ri) * scene.vel((int)ib, (int)jb).y;
-                Real d10 = (1.f - rj) * ri * scene.vel((int)ib + 1, (int)jb).y;
-                Real d01 = rj * (1.f - ri) * scene.vel((int)ib, (int)jb + 1).y;
-                Real d11 = rj * ri * scene.vel((int)ib + 1, (int)jb + 1).y;
+                Real di = ib - in;
+                Real dj = jb - jn;
+
+                Real d00 = (1.f - dj) * (1.f - di) * scene.vel(in, jn).y;
+                Real d10 = (1.f - dj) * di * scene.vel(in + 1, jn).y;
+                Real d01 = dj * (1.f - di) * scene.vel(in, jn + 1).y;
+                Real d11 = dj * di * scene.vel(in + 1, jn + 1).y;
 
                 advVel(i, j).y = d00 + d10 + d11 + d01;
 
             } else advVel(i, j).y = 0;
-        }
+      }
     }
-    scene.vel.set(advVel);
+    scene.vel.swap(advVel);
 }
 
 void FluidSolver::computeDivergence(RealGrid& divergence) {
@@ -146,25 +152,29 @@ void FluidSolver::correctVelocity(){
         }
     }
 }
-//TODO: koordinatensystem abstimmen
+
+
 void FluidSolver::advectDensity(){
     RealGrid advDen(scene.getDimX(), scene.getDimY());
 
     for (int j = 1; j < scene.getDimY() - 1; ++j) {
         for (int i = 1; i < scene.getDimX() - 1; ++i) {
 
-            Real ib = i - scene.getDt() * (scene.vel(i + 1, j).x + scene.vel(i, j).x) / 2.f;
-            Real jb = j - scene.getDt() * (scene.vel(i, j + 1).y + scene.vel(i, j).y) / 2.f;
+            Real ib = (Real)i - scene.getDt() * (scene.vel(i + 1, j).x + scene.vel(i, j).x) / 2.f;
+            Real jb = (Real)j - scene.getDt() * (scene.vel(i, j + 1).y + scene.vel(i, j).y) / 2.f;
 
-            if(ib > 0 && ib < scene.getDimX() - 1 && jb > 0 && jb < scene.getDimY() - 1){
+            int in = advDen.getIndex(ib);
+            int jn = advDen.getIndex(jb);
 
-                Real ri = ib - floorf(ib);
-                Real rj = jb - floorf(jb);
+            if(in >= 0 && in < scene.getDimX() - 1 && jn >= 0 && jn < scene.getDimY() - 1){
 
-                Real d00 = (1.f - rj) * (1.f - ri) * scene.density((int)ib, (int)jb);
-                Real d10 = (1.f - rj) * ri * scene.density((int)ib + 1, (int)jb);
-                Real d01 = rj * (1.f - ri) * scene.density((int)ib, (int)jb + 1);
-                Real d11 = rj * ri * scene.density((int)ib + 1, (int)jb + 1);
+                Real di = ib - in;
+                Real dj = jb - jn;
+
+                Real d00 = (1.f - dj) * (1.f - di) * scene.density(in, jn);
+                Real d10 = (1.f - dj) * di * scene.density(in + 1, jn);
+                Real d01 = dj * (1.f - di) * scene.density(in, jn + 1);
+                Real d11 = dj * di * scene.density(in + 1, jn + 1);
 
                 advDen(i, j) = d00 + d10 + d11 + d01;
 
@@ -173,7 +183,7 @@ void FluidSolver::advectDensity(){
         }
     }
 
-    scene.density.set(advDen);
+    scene.density.swap(advDen);
 
 }
 

@@ -10,21 +10,72 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <iostream>
 #include "../General/Definitions.h"
 #include "../VectorMath/Vector.h"
 
-class RealGrid {
+template <class ValueType>
+class Grid {
 public:
-    RealGrid(int dimX, int dimY, int dimZ = 1) : dimX(dimX), dimY(dimY), dimZ(dimZ) {
-        values = (Real*) calloc((size_t) dimZ * (size_t)dimY * (size_t)dimX, sizeof(Real));
-        clear();
+    Grid(int dimX, int dimY, int dimZ = 1) : dimX(dimX), dimY(dimY), dimZ(dimZ) {
+        values = (ValueType*) calloc((size_t) dimZ * (size_t)dimY * (size_t)dimX, sizeof(ValueType));
     }
 
-    explicit RealGrid(RealGrid& grid) = delete;
+    explicit Grid(Grid& grid) = delete;
 
-    ~RealGrid() {
+    ~Grid() {
         free(values);
     }
+
+    virtual std::string toString() = 0;
+
+    ValueType& operator()(int x, int y, int z){
+        return values[offset(x, y, z)];
+    }
+
+    ValueType& operator()(int x, int y){
+        return values[offset(x, y, 0)];
+    }
+
+    inline int getDimX(){
+        return dimX;
+    }
+    inline int getDimY(){
+        return dimY;
+    }
+    inline int getDimZ(){
+        return dimZ;
+    }
+
+    void swap(Grid<ValueType>& grid){
+        ValueType* vs = grid.getRawPointer();
+        grid.setRawPointer(values);
+        values = vs;
+    }
+
+    ValueType* getRawPointer(){
+        return values;
+    }
+
+    void setRawPointer(ValueType* vs){
+        values = vs;
+    }
+
+protected:
+    int dimX, dimY, dimZ;
+    ValueType* values;
+
+    inline int offset(int x, int y, int z) {
+        return x + y * dimX + z * dimX * dimY;
+    }
+};
+
+
+class RealGrid : public Grid<Real>{
+public:
+    RealGrid(int dimX, int dimY, int dimZ = 1) : Grid<Real>(dimX, dimY, dimZ) {}
+
+    explicit RealGrid(RealGrid& grid) = delete;
 
     std::string toString() {
         std::stringstream out;
@@ -43,76 +94,22 @@ public:
         return out.str();
     }
 
-    Real& operator()(int x, int y, int z){
-        return values[offset(x, y, z)];
+    /*
+     * returns the next smalles index to i, which can be used for interpolation
+     */
+    inline int getIndex(Real i){
+        return (int)(i - 0.5f);
     }
 
-    Real& operator()(int x, int y){
-        return values[offset(x, y, 0)];
-    }
-
-    int getDimX(){
-        return dimX;
-    }
-    int getDimY(){
-        return dimY;
-    }
-    int getDimZ(){
-        return dimZ;
-    }
-
-    void clear(){
-        for(int k = 0; k < dimZ; ++k){
-            for(int j = 0; j < dimY; ++j){
-                for(int i = 0; i < dimX; ++i){
-                    values[offset(i, j, k)] = 0;
-                }
-            }
-        }
-    }
-
-
-    void set(RealGrid& grid){
-        for(int k = 0; k < getDimZ(); ++k){
-            for (int j = 0; j < getDimY(); ++j) {
-                for (int i = 0; i < getDimX(); ++i) {
-                    values[offset(i, j, k)] = grid(i, j, k);
-                }
-            }
-        }
-    }
-
-
-private:
-    int dimX, dimY, dimZ;
-    Real* values;
-
-    int offset(int x, int y, int z) {
-        assert(x >= 0);
-        assert(y >= 0);
-        assert(z >= 0);
-        assert(x < dimX);
-        assert(y < dimY);
-        assert(z < dimZ);
-        return x + y * dimX + z * dimX * dimY;
-    }
 };
 
 
 
-class VectorGrid {
+class VectorGrid : public Grid<Vector3D> {
 public:
-    VectorGrid(int dimX, int dimY, int dimZ = 1) : dimX(dimX), dimY(dimY), dimZ(dimZ) {
-        values = (Vector3D*) calloc((size_t)dimZ * (size_t)dimY * (size_t)dimX, sizeof(Vector3D));
-        clear();
-    }
-
+    VectorGrid(int dimX, int dimY, int dimZ = 1) : Grid<Vector3D>(dimX, dimY, dimZ) {}
 
     explicit VectorGrid(VectorGrid& grid) = delete;
-
-    ~VectorGrid() {
-        free(values);
-    }
 
 
     std::string toString() {
@@ -132,67 +129,19 @@ public:
         return out.str();
     }
 
-    Vector3D& operator()(int x, int y, int z){
-        return values[offset(x, y, z)];
-    }
 
-    Vector3D& operator()(int x, int y){
-        return values[offset(x, y, 0)];
-    }
-
-
-    int getDimX(){
-        return dimX;
-    }
-    int getDimY(){
-        return dimY;
-    }
-    int getDimZ(){
-        return dimZ;
-    }
-
-    void clear(){
-        for(int k = 0; k < dimZ; ++k){
-            for(int j = 0; j < dimY; ++j){
-                for(int i = 0; i < dimX; ++i){
-                    values[offset(i, j, k)].x = 0;
-                    values[offset(i, j, k)].y = 0;
-                    values[offset(i, j, k)].z = 0;
-                }
-            }
-        }
-    }
-
-
-    void set(VectorGrid& grid){
-        for(int k = 0; k < getDimZ(); ++k){
-            for (int j = 0; j < getDimY(); ++j) {
-                for (int i = 0; i < getDimX(); ++i) {
-                    values[offset(i, j, k)] = grid(i, j, k);
-                }
-            }
-        }
-    }
-
-private:
-    int dimX, dimY, dimZ;
-    Vector3D* values;
-
-    int offset(int x, int y, int z) {
-        assert(x >= 0);
-        assert(y >= 0);
-        assert(z >= 0);
-        assert(x < dimX);
-        assert(y < dimY);
-        assert(z < dimZ);
-        return x + y * dimX + z * dimX * dimY;
+    /*
+     * returns the next smalles index to i, which can be used for interpolation
+     */
+    int getIndex(Real i){
+        return (int) i;
     }
 };
 
-
-std::ostream& operator <<(std::ostream& stream, RealGrid& grid);
-
-std::ostream& operator <<(std::ostream& stream, VectorGrid& grid);
-
+template <class ValueType>
+std::ostream& operator <<(std::ostream& stream, Grid<ValueType>& grid){
+    stream << grid.toString();
+    return stream;
+}
 
 #endif //GRAPHICS_GRID_H
