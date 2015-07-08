@@ -28,6 +28,8 @@ public:
     }
 
     virtual std::string toString() = 0;
+    virtual ValueType getDefaultValue() = 0;
+
 
     ValueType& operator()(int x, int y, int z){
         return values[offset(x, y, z)];
@@ -47,18 +49,41 @@ public:
         return dimZ;
     }
 
+
+    ValueType getInterpolated(Real ri, Real rj, Real rk){
+
+        Real di = ri - (int)ri;
+        Real dj = rj - (int)rj;
+        Real dk = rk - (int)rk;
+
+
+        return (1 - di) * (1 - dj) * (1 - dk) * values[offset(ri, rj, rk)]
+                + (di) * (1 - dj) * (1 - dk) * values[offset(ri + 1, rj, rk)]
+                  + (1 - di) * (dj) * (1 - dk) * values[offset(ri, rj + 1, rk)]
+                    + (di) * (dj) * (1 - dk) * values[offset(ri + 1, rj + 1, rk)]
+                      + (1 - di) * (1 - dj) * (dk) * values[offset(ri, rj, rk + 1)]
+                        + (di) * (1 - dj) * (dk) * values[offset(ri + 1, rj, rk + 1)]
+                          + (1 - di) * (dj) * (dk) * values[offset(ri, rj + 1, rk + 1)]
+                            + (di) * (dj) * (dk) * values[offset(ri + 1, rj + 1, rk + 1)];
+    }
+
+    ValueType getInterpolated(Real ri, Real rj){
+        Real di = ri - (int)ri;
+        Real dj = rj - (int)rj;
+
+
+        return (1 - di) * (1 - dj) * values[offset(ri, rj, 0)]
+               + (di) * (1 - dj) * values[offset(ri + 1, rj, 0)]
+               + (1 - di) * (dj) * values[offset(ri, rj + 1, 0)]
+               + (di) * (dj) * values[offset(ri + 1, rj + 1, 0)];
+    }
+
     void swap(Grid<ValueType>& grid){
-        ValueType* vs = grid.getRawPointer();
-        grid.setRawPointer(values);
-        values = vs;
+        std::swap(getRawPointerReference(), grid.getRawPointerReference());
     }
 
-    ValueType* getRawPointer(){
+    ValueType*& getRawPointerReference(){
         return values;
-    }
-
-    void setRawPointer(ValueType* vs){
-        values = vs;
     }
 
 protected:
@@ -94,13 +119,9 @@ public:
         return out.str();
     }
 
-    /*
-     * returns the next smalles index to i, which can be used for interpolation
-     */
-    inline int getIndex(Real i){
-        return (int)(i - 0.5f);
+    Real getDefaultValue() {
+        return 0;
     }
-
 };
 
 
@@ -130,11 +151,8 @@ public:
     }
 
 
-    /*
-     * returns the next smalles index to i, which can be used for interpolation
-     */
-    int getIndex(Real i){
-        return (int) i;
+    Vector3D getDefaultValue() {
+        return Vector3D(0, 0, 0);
     }
 };
 

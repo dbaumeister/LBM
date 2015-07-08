@@ -97,8 +97,8 @@ void drawVelocity(Scene2D& scene) {
 
             glVertex3f(x, y, z);
 
-            Real velX = (scene.vel(i, j).x + scene.vel(i + 1, j).x) / 2.f;
-            Real velY = (scene.vel(i, j).y + scene.vel(i, j + 1).y) / 2.f;
+            Real velX = scene.vel(i, j).x;
+            Real velY = scene.vel(i, j).y;
             x = scaleX(i + 0.5f, scene.getDimX()) +  velX * velScale * IMAGESCALE / (scene.getDimX() - 1.f);
             y = scaleY(j + 0.5f, scene.getDimY()) +  velY * velScale * IMAGESCALE / (scene.getDimY() - 1.f);
 

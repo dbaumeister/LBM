@@ -4,7 +4,7 @@
 #include "FluidSolver/FluidSolver.h"
 
 
-#define TIMESTEP 1.0/60
+#define TIMESTEP 1.0 / 30
 
 
 
@@ -27,8 +27,8 @@ int main(void)
         if(gui.getTime() - t < TIMESTEP) continue;
         t += TIMESTEP;
 
-        applyDensityBlock(scene, scene.getDimX() / 2 - swidth / 2, scene.getDimY() / 5 - sheight / 2, swidth, sheight, 0.75f);
-        applyVelocityBlock(scene, scene.getDimX() / 2 - swidth / 2, scene.getDimY() / 5 - sheight / 2, swidth, sheight, Vector3D(0, 0.5, 0));
+        std::cout << t << std::endl;
+        applyDensityBlock(scene, scene.getDimX() / 2 - swidth / 2, 0, swidth, sheight, 0.75f);
 
         solver.next();
         gui.display(scene);
