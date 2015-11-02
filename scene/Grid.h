@@ -11,8 +11,8 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <iostream>
-#include "../General/Definitions.h"
-#include "../VectorMath/Vector.h"
+#include "../general/Definitions.h"
+#include "../vectormath/Vector.h"
 
 template <class ValueType>
 class Grid {
@@ -28,7 +28,6 @@ public:
     }
 
     virtual std::string toString() = 0;
-    virtual ValueType getDefaultValue() = 0;
 
     ValueType get(int x, int y, int z) const {
         return values[offset(x, y, z)];
@@ -54,35 +53,6 @@ public:
     }
     inline int getDimZ() const {
         return dimZ;
-    }
-
-
-    ValueType getInterpolated(Real ri, Real rj, Real rk){
-
-        Real di = ri - (int)ri;
-        Real dj = rj - (int)rj;
-        Real dk = rk - (int)rk;
-
-
-        return (1 - di) * (1 - dj) * (1 - dk) * values[offset(ri, rj, rk)]
-                + (di) * (1 - dj) * (1 - dk) * values[offset(ri + 1, rj, rk)]
-                  + (1 - di) * (dj) * (1 - dk) * values[offset(ri, rj + 1, rk)]
-                    + (di) * (dj) * (1 - dk) * values[offset(ri + 1, rj + 1, rk)]
-                      + (1 - di) * (1 - dj) * (dk) * values[offset(ri, rj, rk + 1)]
-                        + (di) * (1 - dj) * (dk) * values[offset(ri + 1, rj, rk + 1)]
-                          + (1 - di) * (dj) * (dk) * values[offset(ri, rj + 1, rk + 1)]
-                            + (di) * (dj) * (dk) * values[offset(ri + 1, rj + 1, rk + 1)];
-    }
-
-    ValueType getInterpolated(Real ri, Real rj){
-        Real di = ri - (int)ri;
-        Real dj = rj - (int)rj;
-
-
-        return (1 - di) * (1 - dj) * values[offset(ri, rj, 0)]
-               + (di) * (1 - dj) * values[offset(ri + 1, rj, 0)]
-               + (1 - di) * (dj) * values[offset(ri, rj + 1, 0)]
-               + (di) * (dj) * values[offset(ri + 1, rj + 1, 0)];
     }
 
     void swap(Grid<ValueType>& grid){
@@ -125,10 +95,6 @@ public:
         }
         return out.str();
     }
-
-    Real getDefaultValue() {
-        return 0;
-    }
 };
 
 
@@ -155,11 +121,6 @@ public:
             out << "\n";
         }
         return out.str();
-    }
-
-
-    Vector3D getDefaultValue() {
-        return Vector3D(0, 0, 0);
     }
 };
 

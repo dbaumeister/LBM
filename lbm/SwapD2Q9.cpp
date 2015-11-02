@@ -4,8 +4,6 @@
 
 #include "SwapD2Q9.h"
 
-static const int half = 4; //(9-1)/2;
-
 void SwapD2Q9::collide() {
     for (int iX = 0; iX < dimX; ++iX) {
         for (int iY = 0; iY < dimY; ++iY) {
@@ -28,6 +26,7 @@ void SwapD2Q9::collide() {
 }
 
 void SwapD2Q9::stream() {
+
     for (int iX = 0; iX < dimX; ++iX) {
         for (int iY = 0; iY < dimY; ++iY) {
 
@@ -39,44 +38,17 @@ void SwapD2Q9::stream() {
 
                 int iNext = 9 * (nextX * dimY + nextY);
 
-
-                if (nextX >= 0 && nextY >= 0 && nextX < dimX && nextY < dimY) {
+                if (nextX >= 0 && nextY >= 0 && nextY < dimY) {
+                    //Note: small trick: removed "&& nextX < dimX" as nextX for the first half can only be lower than iX
                     std::swap(f[i + iF + half], f[iNext + iF]);
+                } else { //Half-way bounce back BCs
+                    std::swap(f[i + iF + half], f[i + iF]);
                 }
             }
         }
     }
 }
 
-
-
-void SwapD2Q9::seed() {
-    for (int iX = 0; iX < dimX; ++iX) {
-        for (int iY = 0; iY < dimY; ++iY) {
-            int i = 9 * (iX * dimY + iY);
-            for(int iF = 0; iF < 9; ++iF) {
-                f[i + iF] = 1.f / 9.f;
-            }
-            f[i + 6] = 0.2f;
-        }
-    }
-}
-
-void SwapD2Q9::updateVelocitiesForGui() {
-    for (int iX = 0; iX < dimX; ++iX) {
-        for (int iY = 0; iY < dimY; ++iY) {
-            int i = 9 * (iX * dimY + iY);
-            Real u[2];
-            Real rho = computeRho(&f[i]);
-            computeUAndUSquare(&f[i], rho, &u[0]);
-            vel(iX, iY).x = 5 * u[0];
-            vel(iX, iY).y = 5 * u[1];
-        }
-    }
-}
-
-void SwapD2Q9::next() {
-    collide();
-    stream();
-    updateVelocitiesForGui();
+Real* SwapD2Q9::getArrayAfterCollision() {
+    return f;
 }

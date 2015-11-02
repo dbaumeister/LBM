@@ -1,37 +1,81 @@
 #include <iostream>
-
-#include "GUI/GUI.h"
-#include "FluidSolver/FluidSolver.h"
-
-
-#define TIMESTEP 1.0 / 30
+#include <ctime>
+#include "general/Definitions.h"
 
 
+#ifdef SHOW_GUI
+#include "gui/GUI.h"
+#endif
+
+#ifdef SIMPLE
+#include "lbm/SimpleD2Q9.h"
+#endif
+
+#ifdef SWAP
+#include "lbm/SwapD2Q9.h"
+#endif
+
+#ifdef BLOCK
+#include "lbm/BlockD2Q9.h"
+#endif
 
 int main(void)
 {
-    Scene2D scene(64, 64);
 
-    //source
-    int sheight = scene.getDimY() * 0.05f;
-    int swidth = scene.getDimX() * 0.2f;
+#ifdef SIMPLE
+    SimpleD2Q9 sim(GRID_SIZE, GRID_SIZE);
+    std::string title = "Simple LBM ( 2 - Array )";
+#endif
 
-    FluidSolver solver(scene);
+#ifdef SWAP
+    SwapD2Q9 sim(GRID_SIZE, GRID_SIZE);
+    std::string title = "Swap LBM ( 1 - Array )";
+#endif
 
-    GUI gui("GraphicsApp");
+#ifdef BLOCK
+    BlockD2Q9 sim(GRID_SIZE, GRID_SIZE);
+    std::string title = "Block LBM ( 2 - Array )";
+#endif
 
-    double t = TIMESTEP;
+#ifdef SHOW_GUI
+    GUI gui(title);
+#endif
 
-    while(!gui.shouldClose()){
-
-        if(gui.getTime() - t < TIMESTEP) continue;
-        t += TIMESTEP;
-
-        std::cout << t << std::endl;
-        applyDensityBlock(scene, scene.getDimX() / 2 - swidth / 2, 0, swidth, sheight, 0.75f);
-
-        solver.next();
-        gui.display(scene);
+#ifdef CHECK
+    sim.init();
+    if(!sim.verify()) {
+        return 0;
     }
+#endif
+
+    sim.init(); //do not measure the initialisation step
+
+    std::clock_t start;
+    double elapsedTime;
+
+#ifdef SHOW_GUI
+    VectorGrid vel(GRID_SIZE, GRID_SIZE);
+#endif
+
+    start = std::clock();
+    for(int i = 0; i < NUM_ITERATIONS; ++i) {
+
+#ifdef SHOW_GUI
+        if(gui.shouldClose()) {
+            std::cout << "---- Aborted by User Input ----" << std::endl;
+            break;
+        }
+
+        sim.getVel(vel);
+        gui.display(vel);
+#endif
+
+        sim.collide();
+        sim.stream();
+    }
+
+    elapsedTime = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+    std::cout << "Finished " << title << std::endl;
+    std::cout << "Elapsed time: " << elapsedTime << std::endl;
     return 0;
 }

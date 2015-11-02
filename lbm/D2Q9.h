@@ -18,7 +18,7 @@ static const int c[9][2] = {
 static const Real w[9] = { 4.f/9.f, 1.f/36.f, 1.f/9.f, 1.f/36.f, 1.f/9.f,
                            1.f/36.f, 1.f/9.f, 1.f/36.f, 1.f/9.f };
 
-static const Real omega = 1.5f;
+static const Real omega = 0.7f;
 
 Real computeRho(Real* f);
 
@@ -33,24 +33,25 @@ static const int half = 4; //(9-1)/2;
 class D2Q9 {
 
 public:
-    D2Q9(int dimX, int dimY) : dimX(dimX), dimY(dimY), f((Real*) calloc(dimX * dimY * 9, sizeof(Real))), vel(dimX, dimY){};
+    D2Q9(int dimX, int dimY) : dimX(dimX), dimY(dimY), f((Real*) calloc(dimX * dimY * 9, sizeof(Real))) {};
 
     ~D2Q9(){
         free(f);
     };
 
-    void seed();
-    virtual void next() = 0;
-    virtual bool verify() = 0;
+    void init();
+    bool verify();
 
-    void updateVelocitiesForGui();
-    VectorGrid& getVel();
+    virtual void collide() = 0;
+    virtual void stream() = 0;
+    virtual Real* getArrayAfterCollision() = 0;
+
+    void getVel(VectorGrid& vel);
 
 protected:
     int dimX;
     int dimY;
     Real* f;
-    VectorGrid vel;
 };
 
 #endif //LBM_HELPERMETHODS_H

@@ -12,7 +12,7 @@
 #include <math.h>
 
 
-#include "../General/Definitions.h"
+#include "../general/Definitions.h"
 
 class Vector3D{
 public:

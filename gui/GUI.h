@@ -10,8 +10,8 @@
 #include <stdio.h>
 #include <string>
 
-#include "../General/Definitions.h"
-#include "../Scene/Scene.h"
+#include "../general/Definitions.h"
+#include "../lbm/D2Q9.h"
 
 
 static const float IMAGESCALE = 0.9f;
@@ -31,10 +31,7 @@ public:
     }
 
     bool shouldClose();
-    void display(Scene2D& scene);
-    double getTime();
-
-
+    void display(const VectorGrid& vel);
 
 private:
     std::string title;
@@ -43,7 +40,7 @@ private:
     bool isWindowDestroyed;
 
     void initWindow();
-    void renderWindow(Scene2D& scene);
+    void renderWindow(const VectorGrid& vel);
     void closeWindow();
 
 };

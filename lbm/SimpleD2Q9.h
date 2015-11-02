@@ -5,30 +5,25 @@
 #ifndef LBM_SIMULATION_H
 #define LBM_SIMULATION_H
 
-#include "Helper.h"
+#include "D2Q9.h"
 
 class SimpleD2Q9 : public D2Q9{
 
 public:
     SimpleD2Q9(int dimX, int dimY)
-            : D2Q9(dimX, dimY), f((Real*) calloc(2 * dimX * dimY * 9, sizeof(Real))),
-              fTmp(f + dimX * dimY * 9){}
+            : D2Q9(dimX, dimY), fTmp((Real*) calloc(dimX * dimY * 9, sizeof(Real))){}
 
 
     ~SimpleD2Q9() {
-        free(f);
+        free(fTmp);
     }
-
-    void seed();
-    void next();
-
-private:
-    Real* f;
-    Real* fTmp;
 
     void collide();
     void stream();
-    void updateVelocitiesForGui();
+    Real* getArrayAfterCollision();
+
+private:
+    Real* fTmp;
 };
 
 #endif //LBM_SIMULATION_H

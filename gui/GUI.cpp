@@ -22,8 +22,8 @@ bool GUI::shouldClose() {
     return glfwWindowShouldClose(window) != 0;
 }
 
-void GUI::display(Scene2D& scene){
-    renderWindow(scene);
+void GUI::display(const VectorGrid& vel){
+    renderWindow(vel);
     glfwSwapBuffers(window);
 }
 
@@ -116,7 +116,7 @@ void draw(const VectorGrid& grid) {
 }
 
 
-void GUI::renderWindow(Scene2D& scene) {
+void GUI::renderWindow(const VectorGrid& vel) {
     // Read current window size and set viewport accordingly
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
@@ -136,8 +136,8 @@ void GUI::renderWindow(Scene2D& scene) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    draw(scene.density);
-    draw(scene.vel);
+    //draw here
+    draw(vel);
 }
 
 void GUI::initWindow() {
@@ -166,8 +166,4 @@ void GUI::closeWindow() {
     glfwDestroyWindow(window);
     glfwTerminate();
     isWindowDestroyed = true;
-}
-
-double GUI::getTime() {
-    return glfwGetTime();
 }
