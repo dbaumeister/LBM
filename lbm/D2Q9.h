@@ -30,10 +30,15 @@ bool eq(double a, double b);
 
 static const int half = 4; //(9-1)/2;
 
+// Constant that defines the number of entries that are saved on one lattice.
+// Typically this constant is 9 on a D2Q9 LBM.
+static const int NUM_ENTRIES_PER_LATTICE = 9;
+
 class D2Q9 {
 
 public:
-    D2Q9(int dimX, int dimY) : dimX(dimX), dimY(dimY), f((double*) calloc(dimX * dimY * 9, sizeof(double))) {};
+    D2Q9(int dimX, int dimY) : dimX(dimX), dimY(dimY),
+                               f((double*) calloc(dimX * dimY * NUM_ENTRIES_PER_LATTICE, sizeof(double))) {};
 
     ~D2Q9(){
         free(f);

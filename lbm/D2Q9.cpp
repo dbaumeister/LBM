@@ -38,7 +38,9 @@ double computeLocalEquilibrium(int iF, double rho, double* u, double uSquare) {
 void D2Q9::init() {
     for (int iX = 0; iX < dimX; ++iX) {
         for (int iY = 0; iY < dimY; ++iY) {
-            int i = 9 * (iX * dimY + iY);
+
+            int i = NUM_ENTRIES_PER_LATTICE * (iX * dimY + iY);
+
             for(int iF = 0; iF < 9; ++iF) {
                 f[i + iF] = w[iF];
             }
@@ -49,7 +51,9 @@ void D2Q9::init() {
 void D2Q9::getVel(VectorGrid& vel) {
     for (int iX = 0; iX < dimX; ++iX) {
         for (int iY = 0; iY < dimY; ++iY) {
-            int i = 9 * (iX * dimY + iY);
+
+            int i = NUM_ENTRIES_PER_LATTICE * (iX * dimY + iY);
+
             double u[2];
             double rho = computeRho(&f[i]);
             computeUAndUSquare(&f[i], rho, &u[0]);
@@ -71,7 +75,8 @@ bool D2Q9::verify() {
 
     for(int iX = 0; iX < dimX; ++iX) {
         for(int iY = 0; iY < dimY; ++iY) {
-            int i = 9 * (iX * dimY + iY);
+
+            int i = NUM_ENTRIES_PER_LATTICE * (iX * dimY + iY);
 
             double uPrior[2];
             double rhoPrior = computeRho(&fPrior[i]);
@@ -100,7 +105,8 @@ bool D2Q9::verify() {
     // Verify that the streaming step streams the values into the correct cells
     for(int iX = 0; iX < dimX; ++iX) {
         for(int iY = 0; iY < dimY; ++iY) {
-            int i = 9 * (iX * dimY + iY);
+
+            int i = NUM_ENTRIES_PER_LATTICE * (iX * dimY + iY);
 
             for(int iF = 0; iF < 9; ++iF) {
                 fAfter[i + iF] = iF;
@@ -110,7 +116,8 @@ bool D2Q9::verify() {
     stream();
     for(int iX = 1; iX < dimX - 1; ++iX) {
         for(int iY = 1; iY < dimY - 1; ++iY) {
-            int i = 9 * (iX * dimY + iY);
+
+            int i = NUM_ENTRIES_PER_LATTICE * (iX * dimY + iY);
 
             for(int iF = 0; iF < 9; ++iF) {
                 if(!eq(fPrior[i + iF], iF)) {

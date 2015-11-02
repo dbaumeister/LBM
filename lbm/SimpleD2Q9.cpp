@@ -7,7 +7,9 @@
 void SimpleD2Q9::collide() {
     for (int iX = 0; iX < dimX; ++iX) {
         for (int iY = 0; iY < dimY; ++iY) {
-            int i = 9 * (iX * dimY + iY);
+
+            int i = NUM_ENTRIES_PER_LATTICE * (iX * dimY + iY);
+
             double u[2];
             double rho = computeRho(&f[i]);
             double uSquare = computeUAndUSquare(&f[i], rho, &u[0]);
@@ -21,14 +23,16 @@ void SimpleD2Q9::collide() {
 void SimpleD2Q9::stream() {
     for (int iX = 0; iX < dimX; ++iX) {
         for (int iY = 0; iY < dimY; ++iY) {
-            int i = 9 * (iX * dimY + iY);
+
+            int i = NUM_ENTRIES_PER_LATTICE * (iX * dimY + iY);
 
             f[i] = fTmp[i]; //iF = 0
 
             for (int iF = 1; iF < 9; ++iF) {
+
                 int nextX = iX + c[iF][0];
                 int nextY = iY + c[iF][1];
-                int iNext = 9 * (nextX * dimY + nextY);
+                int iNext = NUM_ENTRIES_PER_LATTICE * (nextX * dimY + nextY);
 
                 int opposite = half * (-1 + 2 * (iF <= half)); // - half if (iF > half)
 

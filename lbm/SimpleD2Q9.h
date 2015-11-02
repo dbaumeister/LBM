@@ -11,7 +11,8 @@ class SimpleD2Q9 : public D2Q9{
 
 public:
     SimpleD2Q9(int dimX, int dimY)
-            : D2Q9(dimX, dimY), fTmp((double*) calloc((size_t)(dimX * dimY * 9), sizeof(double))){}
+            : D2Q9(dimX, dimY),
+              fTmp((double*) calloc((size_t)(dimX * dimY * NUM_ENTRIES_PER_LATTICE), sizeof(double))){}
 
 
     ~SimpleD2Q9() {

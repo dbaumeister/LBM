@@ -6,7 +6,7 @@
 #define GRAPHICS_DEFINITIONS_H
 
 //Control the program by defining either SWAP, BLOCK or SIMPLE.
-#define BLOCK
+#define SIMPLE
 
 //Show the GUI by defining SHOW_GUI here.
 #define SHOW_GUI

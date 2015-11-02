@@ -8,7 +8,7 @@ void SwapD2Q9::collide() {
     for (int iX = 0; iX < dimX; ++iX) {
         for (int iY = 0; iY < dimY; ++iY) {
 
-            int i = 9 * (iX * dimY + iY);
+            int i = NUM_ENTRIES_PER_LATTICE * (iX * dimY + iY);
 
             double u[2];
             double rho = computeRho(&f[i]);
@@ -30,13 +30,13 @@ void SwapD2Q9::stream() {
     for (int iX = 0; iX < dimX; ++iX) {
         for (int iY = 0; iY < dimY; ++iY) {
 
-            int i = 9 * (iX * dimY + iY);
+            int i = NUM_ENTRIES_PER_LATTICE * (iX * dimY + iY);
 
             for (int iF = 1; iF <= half; ++iF) {
                 int nextX = iX + c[iF][0];
                 int nextY = iY + c[iF][1];
 
-                int iNext = 9 * (nextX * dimY + nextY);
+                int iNext = NUM_ENTRIES_PER_LATTICE * (nextX * dimY + nextY);
 
                 if (nextX >= 0 && nextY >= 0 && nextY < dimY) {
                     //Note: small trick: removed "&& nextX < dimX" as nextX for the first half can only be lower than iX
