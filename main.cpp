@@ -57,8 +57,13 @@ int main(void)
     VectorGrid vel(GRID_SIZE, GRID_SIZE);
 #endif
 
+#ifdef OUTPUT_TO_LOGFILE
+    freopen("log", "a", stdout);
+#endif
+
     start = std::clock();
-    for(int i = 0; i < NUM_ITERATIONS; ++i) {
+    int i = 0;
+    for(; i < NUM_ITERATIONS; ++i) {
 
 #ifdef SHOW_GUI
         if(gui.shouldClose()) {
@@ -76,6 +81,8 @@ int main(void)
 
     elapsedTime = (std::clock() - start) / (double) CLOCKS_PER_SEC;
     std::cout << "Finished " << title << std::endl;
+    std::cout << i << " Iterations on a " << GRID_SIZE << "x" << GRID_SIZE << " grid." << std::endl;
     std::cout << "Elapsed time: " << elapsedTime << std::endl;
+    std::cout << std::endl;
     return 0;
 }

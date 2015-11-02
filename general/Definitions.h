@@ -9,13 +9,16 @@
 #define BLOCK
 
 //Show the GUI by defining SHOW_GUI here.
-//#define SHOW_GUI
+#define SHOW_GUI
+
+//Define OUTPUT_TO_LOGFILE to redirect std::cout to the file "log"
+#define OUTPUT_TO_LOGFILE
 
 //Defining CAVITY shows another setup on the simple implementation
-//#define CAVITY
+#define CAVITY
 
 //Run additional checks by defining CHECK
-#define CHECK
+//#define CHECK
 
 //Control the problem size with these constants.
 static const int NUM_ITERATIONS = 1000;

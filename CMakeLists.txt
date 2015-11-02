@@ -3,6 +3,9 @@ project(LBM)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
+set(dir ${CMAKE_CURRENT_SOURCE_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${dir}/bin")
+
 set(SOURCE_FILES main.cpp)
 add_executable(LBM ${SOURCE_FILES} vectormath/Vector.h gui/GUI.h gui/GUI.cpp scene/Grid.h vectormath/Vector.cpp scene/Grid.cpp general/Definitions.h lbm/SimpleD2Q9.h lbm/SimpleD2Q9.cpp lbm/SwapD2Q9.h lbm/SwapD2Q9.cpp lbm/BlockD2Q9.h lbm/BlockD2Q9.cpp lbm/D2Q9.h lbm/D2Q9.cpp)
 
