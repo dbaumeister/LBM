@@ -52,55 +52,61 @@ inline float scaleY(Real j, int dimY){
 }
 
 
-void drawDensity(Scene2D& scene) {
+void draw(const RealGrid& grid) {
     glBegin(GL_QUADS);
 
     Real c, x, y, z = 0;
-    for(int i = 0; i < scene.getDimX(); ++i){
-        for(int j = 0; j < scene.getDimY(); ++j){
+    int dimX = grid.getDimX();
+    int dimY = grid.getDimY();
 
-            c = std::min(1.f, scene.density(i, j));
+    for(int i = 0; i < dimX; ++i){
+        for(int j = 0; j < dimY; ++j){
+
+            c = std::min(1.f, grid.get(i, j));
             glColor3f(1.f - c, 1.f - c, 1.f - c);
 
-            x = scaleX(i, scene.getDimX());
-            y = scaleY(j, scene.getDimY());
+            x = scaleX(i, dimX);
+            y = scaleY(j, dimY);
             glVertex3f(x, y, z);
 
-            x = scaleX(i, scene.getDimX());
-            y = scaleY(j + 1, scene.getDimY());
+            x = scaleX(i, dimX);
+            y = scaleY(j + 1, dimY);
             glVertex3f(x, y, z);
 
-            x = scaleX(i + 1, scene.getDimX());
-            y = scaleY(j + 1, scene.getDimY());
+            x = scaleX(i + 1, dimX);
+            y = scaleY(j + 1, dimY);
             glVertex3f(x, y, z);
 
-            x = scaleX(i + 1, scene.getDimX());
-            y = scaleY(j, scene.getDimY());
+            x = scaleX(i + 1, dimX);
+            y = scaleY(j, dimY);
             glVertex3f(x, y, z);
         }
     }
     glEnd();
 }
 
-void drawVelocity(Scene2D& scene) {
+void draw(const VectorGrid& grid) {
 
     glBegin(GL_LINES);
     Real x, y, z = 0.f;
     Real velScale = 2.f;
     glColor3f(0.9f, 0.f, 0.f);
 
-    for(int i = 0; i < scene.getDimX() - 1; ++i){
-        for(int j = 0; j < scene.getDimY() - 1; ++j){
+    int dimX = grid.getDimX();
+    int dimY = grid.getDimY();
 
-            x = scaleX(i + 0.5f, scene.getDimX());
-            y = scaleY(j + 0.5f, scene.getDimY());
+    for(int i = 0; i < dimX - 1; ++i){
+        for(int j = 0; j < dimY - 1; ++j){
+
+            x = scaleX(i + 0.5f, dimX);
+            y = scaleY(j + 0.5f, dimY);
 
             glVertex3f(x, y, z);
 
-            Real velX = scene.vel(i, j).x;
-            Real velY = scene.vel(i, j).y;
-            x = scaleX(i + 0.5f, scene.getDimX()) +  velX * velScale * IMAGESCALE / (scene.getDimX() - 1.f);
-            y = scaleY(j + 0.5f, scene.getDimY()) +  velY * velScale * IMAGESCALE / (scene.getDimY() - 1.f);
+            Real velX = grid.get(i, j).x;
+            Real velY = grid.get(i, j).y;
+            x = scaleX(i + 0.5f, dimX) +  velX * velScale * IMAGESCALE / (dimX - 1.f);
+            y = scaleY(j + 0.5f, dimY) +  velY * velScale * IMAGESCALE / (dimY - 1.f);
 
             glVertex3f(x, y, z);
 
@@ -130,8 +136,8 @@ void GUI::renderWindow(Scene2D& scene) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    drawDensity(scene);
-    drawVelocity(scene);
+    draw(scene.density);
+    draw(scene.vel);
 }
 
 void GUI::initWindow() {

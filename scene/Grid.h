@@ -30,6 +30,13 @@ public:
     virtual std::string toString() = 0;
     virtual ValueType getDefaultValue() = 0;
 
+    ValueType get(int x, int y, int z) const {
+        return values[offset(x, y, z)];
+    }
+
+    ValueType get(int x, int y) const {
+        return values[offset(x, y, 0)];
+    }
 
     ValueType& operator()(int x, int y, int z){
         return values[offset(x, y, z)];
@@ -39,13 +46,13 @@ public:
         return values[offset(x, y, 0)];
     }
 
-    inline int getDimX(){
+    inline int getDimX() const {
         return dimX;
     }
-    inline int getDimY(){
+    inline int getDimY() const {
         return dimY;
     }
-    inline int getDimZ(){
+    inline int getDimZ() const {
         return dimZ;
     }
 
@@ -90,7 +97,7 @@ protected:
     int dimX, dimY, dimZ;
     ValueType* values;
 
-    inline int offset(int x, int y, int z) {
+    inline int offset(int x, int y, int z) const {
         return x + y * dimX + z * dimX * dimY;
     }
 };
