@@ -34,18 +34,18 @@ Vector3D operator %(Vector3D left, Vector3D right){
 }
 
 
-Real operator *(Vector3D left, Vector3D right){
+double operator *(Vector3D left, Vector3D right){
     Vector3D out(left);
     return out.dot(right);
 }
 
-Vector3D operator *(Real v, Vector3D right){
+Vector3D operator *(double v, Vector3D right){
     Vector3D out(right);
     out *= v;
     return out;
 }
 
-Vector3D operator *(Vector3D left, Real v){
+Vector3D operator *(Vector3D left, double v){
     Vector3D out(left);
     out *= v;
     return out;

@@ -43,53 +43,19 @@ void GUI::display(const VectorGrid& vel){
 //   |               |
 // -1/-1------------1/-1
 
-inline float scaleX(Real i, int dimX){
-    return IMAGESCALE * (i / (0.5f * (dimX)) - 1.f);
+inline double scaleX(double i, int dimX){
+    return IMAGESCALE * (i / (0.5 * (dimX)) - 1.);
 }
 
-inline float scaleY(Real j, int dimY){
-    return IMAGESCALE * (j / (0.5f * (dimY)) - 1.f);
-}
-
-
-void draw(const RealGrid& grid) {
-    glBegin(GL_QUADS);
-
-    Real c, x, y, z = 0;
-    int dimX = grid.getDimX();
-    int dimY = grid.getDimY();
-
-    for(int i = 0; i < dimX; ++i){
-        for(int j = 0; j < dimY; ++j){
-
-            c = std::min(1.f, grid.get(i, j));
-            glColor3f(1.f - c, 1.f - c, 1.f - c);
-
-            x = scaleX(i, dimX);
-            y = scaleY(j, dimY);
-            glVertex3f(x, y, z);
-
-            x = scaleX(i, dimX);
-            y = scaleY(j + 1, dimY);
-            glVertex3f(x, y, z);
-
-            x = scaleX(i + 1, dimX);
-            y = scaleY(j + 1, dimY);
-            glVertex3f(x, y, z);
-
-            x = scaleX(i + 1, dimX);
-            y = scaleY(j, dimY);
-            glVertex3f(x, y, z);
-        }
-    }
-    glEnd();
+inline double scaleY(double j, int dimY){
+    return IMAGESCALE * (j / (0.5 * (dimY)) - 1.);
 }
 
 void draw(const VectorGrid& grid) {
 
     glBegin(GL_LINES);
-    Real x, y, z = 0.f;
-    Real velScale = 2.f;
+    double x, y, z = 0.;
+    double velScale = 2.;
     glColor3f(0.9f, 0.f, 0.f);
 
     int dimX = grid.getDimX();
@@ -98,17 +64,17 @@ void draw(const VectorGrid& grid) {
     for(int i = 0; i < dimX - 1; ++i){
         for(int j = 0; j < dimY - 1; ++j){
 
-            x = scaleX(i + 0.5f, dimX);
-            y = scaleY(j + 0.5f, dimY);
+            x = scaleX(i + 0.5, dimX);
+            y = scaleY(j + 0.5, dimY);
 
-            glVertex3f(x, y, z);
+            glVertex3f((float)x, (float)y, (float)z);
 
-            Real velX = grid.get(i, j).x;
-            Real velY = grid.get(i, j).y;
-            x = scaleX(i + 0.5f, dimX) +  velX * velScale * IMAGESCALE / (dimX - 1.f);
-            y = scaleY(j + 0.5f, dimY) +  velY * velScale * IMAGESCALE / (dimY - 1.f);
+            double velX = grid.get(i, j).x;
+            double velY = grid.get(i, j).y;
+            x = scaleX(i + 0.5, dimX) +  velX * velScale * IMAGESCALE / (dimX - 1.);
+            y = scaleY(j + 0.5, dimY) +  velY * velScale * IMAGESCALE / (dimY - 1.);
 
-            glVertex3f(x, y, z);
+            glVertex3f((float)x, (float)y, (float)z);
 
         }
     }
@@ -132,7 +98,7 @@ void GUI::renderWindow(const VectorGrid& vel) {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+    glOrtho(-ratio, ratio, -1., 1., 1., -1.);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 

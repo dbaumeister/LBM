@@ -15,25 +15,25 @@ static const int c[9][2] = {
         {0,1}
 };
 
-static const Real w[9] = { 4.f/9.f, 1.f/36.f, 1.f/9.f, 1.f/36.f, 1.f/9.f,
-                           1.f/36.f, 1.f/9.f, 1.f/36.f, 1.f/9.f };
+static const double w[9] = { 4./9., 1./36., 1./9., 1./36., 1./9.,
+                           1./36., 1./9., 1./36., 1./9. };
 
-static const Real omega = 0.7f;
+static const double omega = 0.7;
 
-Real computeRho(Real* f);
+double computeRho(double* f);
 
-Real computeUAndUSquare(Real* f, Real rho, Real* u);
+double computeUAndUSquare(double* f, double rho, double* u);
 
-Real computeLocalEquilibrium(int iF, Real rho, Real* u, Real uSquare);
+double computeLocalEquilibrium(int iF, double rho, double* u, double uSquare);
 
-bool eq(float a, float b);
+bool eq(double a, double b);
 
 static const int half = 4; //(9-1)/2;
 
 class D2Q9 {
 
 public:
-    D2Q9(int dimX, int dimY) : dimX(dimX), dimY(dimY), f((Real*) calloc(dimX * dimY * 9, sizeof(Real))) {};
+    D2Q9(int dimX, int dimY) : dimX(dimX), dimY(dimY), f((double*) calloc(dimX * dimY * 9, sizeof(double))) {};
 
     ~D2Q9(){
         free(f);
@@ -44,14 +44,14 @@ public:
 
     virtual void collide() = 0;
     virtual void stream() = 0;
-    virtual Real* getArrayAfterCollision() = 0;
+    virtual double* getArrayAfterCollision() = 0;
 
     void getVel(VectorGrid& vel);
 
 protected:
     int dimX;
     int dimY;
-    Real* f;
+    double* f;
 };
 
 #endif //LBM_HELPERMETHODS_H

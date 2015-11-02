@@ -29,10 +29,6 @@ public:
 
     virtual std::string toString() = 0;
 
-    ValueType get(int x, int y, int z) const {
-        return values[offset(x, y, z)];
-    }
-
     ValueType get(int x, int y) const {
         return values[offset(x, y, 0)];
     }
@@ -51,13 +47,6 @@ public:
     inline int getDimY() const {
         return dimY;
     }
-    inline int getDimZ() const {
-        return dimZ;
-    }
-
-    void swap(Grid<ValueType>& grid){
-        std::swap(getRawPointerReference(), grid.getRawPointerReference());
-    }
 
     ValueType*& getRawPointerReference(){
         return values;
@@ -71,32 +60,6 @@ protected:
         return x + y * dimX + z * dimX * dimY;
     }
 };
-
-
-class RealGrid : public Grid<Real>{
-public:
-    RealGrid(int dimX, int dimY, int dimZ = 1) : Grid<Real>(dimX, dimY, dimZ) {}
-
-    explicit RealGrid(RealGrid& grid) = delete;
-
-    std::string toString() {
-        std::stringstream out;
-
-        for(int k = 0; k < dimZ; ++k){
-            out << "Slice " << k << ":\n";
-            for(int j = 0; j < dimY; ++j){
-                out << "[ ";
-                for(int i = 0; i < dimX; ++i){
-                    out << values[offset(i, j, k)] << " ";
-                }
-                out << "]\n";
-            }
-            out << "\n";
-        }
-        return out.str();
-    }
-};
-
 
 
 class VectorGrid : public Grid<Vector3D> {

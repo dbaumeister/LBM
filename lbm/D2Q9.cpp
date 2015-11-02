@@ -4,16 +4,16 @@
 
 #include "D2Q9.h"
 
-Real computeRho(Real* f) {
-    Real rho = 0.f;
+double computeRho(double* f) {
+    double rho = 0.f;
     for(int iF = 0; iF < 9; ++iF) {
         rho += f[iF];
     }
     return rho;
 }
 
-Real computeUAndUSquare(Real* f, Real rho, Real* u) {
-    Real uSquare = 0.f;
+double computeUAndUSquare(double* f, double rho, double* u) {
+    double uSquare = 0.f;
     for(int iD = 0; iD < 2; ++iD) {
         u[iD] = 0.f;
         for(int iF = 0; iF < 9; ++iF) {
@@ -25,8 +25,8 @@ Real computeUAndUSquare(Real* f, Real rho, Real* u) {
     return uSquare;
 }
 
-Real computeLocalEquilibrium(int iF, Real rho, Real* u, Real uSquare) {
-    Real c_u = 0;
+double computeLocalEquilibrium(int iF, double rho, double* u, double uSquare) {
+    double c_u = 0;
     for (int iD = 0; iD < 2; ++iD) {
         c_u += c[iF][iD] * u[iD];
     }
@@ -50,8 +50,8 @@ void D2Q9::getVel(VectorGrid& vel) {
     for (int iX = 0; iX < dimX; ++iX) {
         for (int iY = 0; iY < dimY; ++iY) {
             int i = 9 * (iX * dimY + iY);
-            Real u[2];
-            Real rho = computeRho(&f[i]);
+            double u[2];
+            double rho = computeRho(&f[i]);
             computeUAndUSquare(&f[i], rho, &u[0]);
             vel(iX, iY).x = 100 * u[0];
             vel(iX, iY).y = 100 * u[1];
@@ -59,34 +59,34 @@ void D2Q9::getVel(VectorGrid& vel) {
     }
 }
 
-bool eq(float a, float b) {
-    return (fabs(a - b) < 0.00001f);
+bool eq(double a, double b) {
+    return (fabs(a - b) < 0.0000001);
 }
 
 bool D2Q9::verify() {
     // Verify that collision does not change the impulse
 
-    Real* fPrior = f;
-    Real* fAfter = getArrayAfterCollision();
+    double* fPrior = f;
+    double* fAfter = getArrayAfterCollision();
 
     for(int iX = 0; iX < dimX; ++iX) {
         for(int iY = 0; iY < dimY; ++iY) {
             int i = 9 * (iX * dimY + iY);
 
-            Real uPrior[2];
-            Real rhoPrior = computeRho(&fPrior[i]);
-            Real uSquarePrior = computeUAndUSquare(&fPrior[i], rhoPrior, &uPrior[0]);
+            double uPrior[2];
+            double rhoPrior = computeRho(&fPrior[i]);
+            double uSquarePrior = computeUAndUSquare(&fPrior[i], rhoPrior, &uPrior[0]);
 
             // p = || m * v || = || rho * V * v || = //Note: Volume V == 1 * 1 * 1 == 1
             // || rho * v || = (rho * v[0])² + (rho * v[1])² = rho² * (v[0]² + v[1]²) = rho² * vSquare
-            Real impulsePrior = rhoPrior * rhoPrior * uSquarePrior;
+            double impulsePrior = rhoPrior * rhoPrior * uSquarePrior;
 
             collide();
-            Real uAfter[2];
-            Real rhoAfter = computeRho(&fAfter[i]);
-            Real uSquareAfter = computeUAndUSquare(&fAfter[i], rhoAfter, &uAfter[0]);
+            double uAfter[2];
+            double rhoAfter = computeRho(&fAfter[i]);
+            double uSquareAfter = computeUAndUSquare(&fAfter[i], rhoAfter, &uAfter[0]);
 
-            Real impulseAfter = rhoAfter * rhoAfter * uSquareAfter;
+            double impulseAfter = rhoAfter * rhoAfter * uSquareAfter;
 
             if(!eq(impulsePrior, impulseAfter)) {
                 printf("Wrong collision in Lattice [%d, %d]: Prior (%f) - (%f, %f) <-> After (%f) - (%f, %f).\n",

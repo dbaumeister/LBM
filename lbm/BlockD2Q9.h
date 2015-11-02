@@ -7,11 +7,13 @@
 
 #include "D2Q9.h"
 
+static const int BLOCK_SIZE = 64;
+
 class BlockD2Q9 : public D2Q9{
 
 public:
     BlockD2Q9(int dimX, int dimY)
-            : D2Q9(dimX, dimY), fTmp((Real*) calloc(dimX * dimY * 9, sizeof(Real))){}
+            : D2Q9(dimX, dimY), fTmp((double*) calloc((size_t)(dimX * dimY * 9), sizeof(double))){}
 
     ~BlockD2Q9() {
         free(fTmp);
@@ -19,10 +21,10 @@ public:
 
     void collide();
     void stream();
-    Real* getArrayAfterCollision();
+    double* getArrayAfterCollision();
 
 private:
-    Real* fTmp;
+    double* fTmp;
 };
 
 #endif //LBM_BLOCKSIMULATION_H

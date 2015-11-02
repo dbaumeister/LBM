@@ -10,9 +10,9 @@ void SwapD2Q9::collide() {
 
             int i = 9 * (iX * dimY + iY);
 
-            Real u[2];
-            Real rho = computeRho(&f[i]);
-            Real uSquare = computeUAndUSquare(&f[i], rho, &u[0]);
+            double u[2];
+            double rho = computeRho(&f[i]);
+            double uSquare = computeUAndUSquare(&f[i], rho, &u[0]);
 
             for (int iF = 0; iF < 9; ++iF) {
                 f[i + iF] *= (1.-omega);
@@ -49,6 +49,6 @@ void SwapD2Q9::stream() {
     }
 }
 
-Real* SwapD2Q9::getArrayAfterCollision() {
+double* SwapD2Q9::getArrayAfterCollision() {
     return f;
 }

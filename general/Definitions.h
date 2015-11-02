@@ -5,8 +5,6 @@
 #ifndef GRAPHICS_DEFINITIONS_H
 #define GRAPHICS_DEFINITIONS_H
 
-#define Real float
-
 //Control the program by defining either SWAP, BLOCK or SIMPLE.
 #define BLOCK
 

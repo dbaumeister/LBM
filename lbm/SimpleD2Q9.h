@@ -11,7 +11,7 @@ class SimpleD2Q9 : public D2Q9{
 
 public:
     SimpleD2Q9(int dimX, int dimY)
-            : D2Q9(dimX, dimY), fTmp((Real*) calloc(dimX * dimY * 9, sizeof(Real))){}
+            : D2Q9(dimX, dimY), fTmp((double*) calloc((size_t)(dimX * dimY * 9), sizeof(double))){}
 
 
     ~SimpleD2Q9() {
@@ -20,10 +20,10 @@ public:
 
     void collide();
     void stream();
-    Real* getArrayAfterCollision();
+    double* getArrayAfterCollision();
 
 private:
-    Real* fTmp;
+    double* fTmp;
 };
 
 #endif //LBM_SIMULATION_H

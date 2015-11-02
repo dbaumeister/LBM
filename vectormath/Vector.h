@@ -18,9 +18,9 @@ class Vector3D{
 public:
     Vector3D(const Vector3D& v) : x(v.x), y(v.y), z(v.z) {}
 
-    Vector3D(Real x = 0, Real y = 0, Real z = 0) : x(x), y(y), z(z){}
+    Vector3D(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z){}
 
-    Real x, y, z;
+    double x, y, z;
 
     std::string toString(){
         std::stringstream out;
@@ -29,7 +29,7 @@ public:
     }
 
 
-    void operator *=(Real v){
+    void operator *=(double v){
         x *= v;
         y *= v;
         z *= v;
@@ -47,12 +47,8 @@ public:
         z -= other.z;
     }
 
-    Real dot(Vector3D& other){
+    double dot(Vector3D& other){
         return x * other.x + y * other.y + z * other.z;
-    }
-
-    Real norm(){
-        return sqrt(x * x + y * y + z * z);
     }
 };
 
@@ -69,11 +65,11 @@ Vector3D operator -(Vector3D left, Vector3D right);
 Vector3D operator %(Vector3D left, Vector3D right);
 
 
-Real operator *(Vector3D left, Vector3D right);
+double operator *(Vector3D left, Vector3D right);
 
-Vector3D operator *(Real v, Vector3D right);
+Vector3D operator *(double v, Vector3D right);
 
-Vector3D operator *(Vector3D left, Real v);
+Vector3D operator *(Vector3D left, double v);
 
 
 #endif //GRAPHICS_VECTOR_H
