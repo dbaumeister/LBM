@@ -4,6 +4,13 @@
 
 #include "D2Q9.h"
 
+double *calloc64ByteAligned(size_t size) {
+    // cacheline aligned
+    void* ptr = aligned_alloc(64 * sizeof(void*), size);
+    memset(ptr, 0, size);
+    return (double*) ptr;
+}
+
 double computeRho(double* f) {
     double rho = 0.f;
     for(int iF = 0; iF < 9; ++iF) {

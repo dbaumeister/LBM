@@ -9,7 +9,7 @@
 #define SIMPLE
 
 //Show the GUI by defining SHOW_GUI here.
-#define SHOW_GUI
+//#define SHOW_GUI
 
 //Define OUTPUT_TO_LOGFILE to redirect std::cout to the file "log"
 #define OUTPUT_TO_LOGFILE
@@ -21,8 +21,9 @@
 //#define CHECK
 
 //Control the problem size with these constants.
-static const int NUM_ITERATIONS = 1000;
-static const int GRID_SIZE = 64;
+static const int NUM_TIME_MEASUREMENTS = 20;
+static const int NUM_ITERATIONS = 10;
+static const int GRID_SIZE = 512;
 
 
 #endif //GRAPHICS_DEFINITIONS_H

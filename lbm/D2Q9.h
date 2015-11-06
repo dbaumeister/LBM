@@ -5,6 +5,9 @@
 #ifndef LBM_HELPERMETHODS_H
 #define LBM_HELPERMETHODS_H
 
+#include <stdlib.h>
+#include <cstring>
+
 #include "../general/Definitions.h"
 #include "../scene/Grid.h"
 
@@ -20,11 +23,14 @@ static const double w[9] = { 4./9., 1./36., 1./9., 1./36., 1./9.,
 
 static const double omega = 0.7;
 
+double *calloc64ByteAligned(size_t size);
+
 double computeRho(double* f);
 
 double computeUAndUSquare(double* f, double rho, double* u);
 
 double computeLocalEquilibrium(int iF, double rho, double* u, double uSquare);
+
 
 bool eq(double a, double b);
 
@@ -38,7 +44,7 @@ class D2Q9 {
 
 public:
     D2Q9(int dimX, int dimY) : dimX(dimX), dimY(dimY),
-                               f((double*) calloc(dimX * dimY * NUM_ENTRIES_PER_LATTICE, sizeof(double))) {};
+                               f(calloc64ByteAligned(dimX * dimY * NUM_ENTRIES_PER_LATTICE * sizeof(double))) {};
 
     ~D2Q9(){
         free(f);

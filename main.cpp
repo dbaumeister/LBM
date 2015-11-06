@@ -51,8 +51,7 @@ int main(void)
     sim.init(); //do not measure the initialisation step
 
     std::clock_t start;
-    double elapsedTime;
-
+    double elapsedTimes[NUM_TIME_MEASUREMENTS];
 #ifdef SHOW_GUI
     VectorGrid vel(GRID_SIZE, GRID_SIZE);
 #endif
@@ -61,28 +60,43 @@ int main(void)
     freopen("log", "a", stdout);
 #endif
 
-    start = std::clock();
     int i = 0;
-    for(; i < NUM_ITERATIONS; ++i) {
+    int j = 0;
+    for(; j < NUM_TIME_MEASUREMENTS; ++j) {
 
 #ifdef SHOW_GUI
         if(gui.shouldClose()) {
             std::cout << "---- Aborted by User Input ----" << std::endl;
             break;
         }
-
-        sim.getVel(vel);
-        gui.display(vel);
 #endif
 
-        sim.collide();
-        sim.stream();
+        start = std::clock();
+        for(i = 0; i < NUM_ITERATIONS; ++i) {
+
+#ifdef SHOW_GUI
+            if(gui.shouldClose()) {
+                break;
+            }
+
+            sim.getVel(vel);
+            gui.display(vel);
+#endif
+
+            sim.collide();
+            sim.stream();
+        }
+
+        elapsedTimes[j] = (std::clock() - start) / (double) CLOCKS_PER_SEC;
     }
 
-    elapsedTime = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+
     std::cout << "Finished " << title << std::endl;
-    std::cout << i << " Iterations on a " << GRID_SIZE << "x" << GRID_SIZE << " grid." << std::endl;
-    std::cout << "Elapsed time: " << elapsedTime << std::endl;
-    std::cout << std::endl;
+    std::cout << j << " * " << NUM_ITERATIONS << " Iterations on a " << GRID_SIZE << "x" << GRID_SIZE << " grid." << std::endl;
+    std::cout << "Elapsed times: ";
+    for(int i = 0; i < j; ++i) {
+        std::cout << elapsedTimes[i] << "; ";
+    }
+    std::cout << std::endl << std::endl;
     return 0;
 }
