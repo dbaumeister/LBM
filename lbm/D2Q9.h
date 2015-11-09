@@ -11,6 +11,13 @@
 #include "../general/Definitions.h"
 #include "../scene/Grid.h"
 
+
+//Datastructures
+// CollOpt
+// C SW S SE W NW N NE E
+// Bundle
+// SW S SE <-> W C E <-> NW N NE
+
 static const int c[9][2] = {
         {0,0},
         {-1,1}, {-1,0}, {-1,-1}, {0,-1},
@@ -29,8 +36,11 @@ double computeRho(double* f);
 
 double computeUAndUSquare(double* f, double rho, double* u);
 
+#ifdef BUNDLE
+double computeLocalEquilibrium(double weight, int cx, int cy, double rho, double* u, double uSquare);
+#else
 double computeLocalEquilibrium(int iF, double rho, double* u, double uSquare);
-
+#endif
 
 bool eq(double a, double b);
 

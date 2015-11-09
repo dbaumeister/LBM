@@ -56,6 +56,7 @@ int main(void)
     VectorGrid vel(GRID_SIZE, GRID_SIZE);
 #endif
 
+
 #ifdef OUTPUT_TO_LOGFILE
     freopen("log", "a", stdout);
 #endif
@@ -82,7 +83,6 @@ int main(void)
             sim.getVel(vel);
             gui.display(vel);
 #endif
-
             sim.collide();
             sim.stream();
         }
