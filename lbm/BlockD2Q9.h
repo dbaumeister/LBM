@@ -22,7 +22,6 @@ public:
 
     void collide();
     void stream();
-    double* getArrayAfterCollision();
 
 private:
     double* fTmp;

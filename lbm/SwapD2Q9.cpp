@@ -18,20 +18,20 @@ void SwapD2Q9::collide() {
             double uSquare = computeUAndUSquare(&f[i], rho, &u[0]);
 
 #ifdef BUNDLE
-            f[i] = (1 - omega) * f[i] + omega * computeLocalEquilibrium(1./36., -1, -1, rho, &u[0], uSquare);
-            f[i + 1] = (1 - omega) * f[i + 1] + omega * computeLocalEquilibrium(1./9., 0, -1, rho, &u[0], uSquare);
-            f[i + 2] = (1 - omega) * f[i + 2] + omega * computeLocalEquilibrium(1./36., 1, -1, rho, &u[0], uSquare);
-            f[i + 3 * N] = (1 - omega) * f[i + 3 * N] + omega * computeLocalEquilibrium(1./9., -1, 0, rho, &u[0], uSquare);
-            f[i + 3 * N + 1] = (1 - omega) * f[i + 3 * N + 1] + omega * computeLocalEquilibrium(4./9., 0, 0, rho, &u[0], uSquare);
-            f[i + 3 * N + 2] = (1 - omega) * f[i + 3 * N + 2] + omega * computeLocalEquilibrium(1./9., 1, 0, rho, &u[0], uSquare);
-            f[i + 6 * N] = (1 - omega) * f[i + 6 * N] + omega * computeLocalEquilibrium(1./36., -1, 1, rho, &u[0], uSquare);
-            f[i + 6 * N + 1] = (1 - omega) * f[i + 6 * N + 1] + omega * computeLocalEquilibrium(1./9., 0, 1, rho, &u[0], uSquare);
-            f[i + 6 * N + 2] = (1 - omega) * f[i  + 6 * N + 2] + omega * computeLocalEquilibrium(1./36., 1, 1, rho, &u[0], uSquare);
+            f[i + _SW] = (1 - omega) * f[i + _SW] + omega * computeLocalEquilibrium(1./36., -1, -1, rho, &u[0], uSquare);
+            f[i + _S] = (1 - omega) * f[i + _S] + omega * computeLocalEquilibrium(1./9., 0, -1, rho, &u[0], uSquare);
+            f[i + _SE] = (1 - omega) * f[i + _SE] + omega * computeLocalEquilibrium(1./36., 1, -1, rho, &u[0], uSquare);
+            f[i + _W] = (1 - omega) * f[i + _W] + omega * computeLocalEquilibrium(1./9., -1, 0, rho, &u[0], uSquare);
+            f[i + _C] = (1 - omega) * f[i + _C] + omega * computeLocalEquilibrium(4./9., 0, 0, rho, &u[0], uSquare);
+            f[i + _E] = (1 - omega) * f[i + _E] + omega * computeLocalEquilibrium(1./9., 1, 0, rho, &u[0], uSquare);
+            f[i + _NW] = (1 - omega) * f[i + _NW] + omega * computeLocalEquilibrium(1./36., -1, 1, rho, &u[0], uSquare);
+            f[i + _N] = (1 - omega) * f[i + _N] + omega * computeLocalEquilibrium(1./9., 0, 1, rho, &u[0], uSquare);
+            f[i + _NE] = (1 - omega) * f[i  + _NE] + omega * computeLocalEquilibrium(1./36., 1, 1, rho, &u[0], uSquare);
 
-            std::swap(f[i], f[i + 6 * N + 2]); //SW & NE
-            std::swap(f[i + 1], f[i + 6 * N + 1]); //S & N
-            std::swap(f[i + 2], f[i + 6 * N]); //SE & NW
-            std::swap(f[i + 3 * N], f[i + 3 * N + 2]); //W & E
+            std::swap(f[i + _SW], f[i + _NE]); //SW & NE
+            std::swap(f[i + _S], f[i + _N]); //S & N
+            std::swap(f[i + _SE], f[i + _NW]); //SE & NW
+            std::swap(f[i + _W], f[i + _E]); //W & E
 #else
             for (int iF = 0; iF < 9; ++iF) {
                 f[i + iF] *= (1.-omega);
@@ -54,21 +54,21 @@ void SwapD2Q9::stream() {
             int i = 3 * (iX * dimY + iY);
 
             if(iX > 0 && iY > 0) {
-                std::swap(f[i], f[i + 6 * N - 3 * dimY - 3]); // swap SW with NE of the [iX - 1, iY - 1] field
+                std::swap(f[i + _SW], f[i + _NE - 3 * dimY - 3]); // swap SW with NE of the [iX - 1, iY - 1] field
             }
 
 
             if(iY > 0) {
-                std::swap(f[i + 1], f[i + 1 + 6 * N - 3]); // swap S with N of the [iX, iY - 1] field
+                std::swap(f[i + _S], f[i + _N - 3]); // swap S with N of the [iX, iY - 1] field
             }
 
 
             if(iX < dimX - 1 && iY > 0) {
-                std::swap(f[i + 2], f[i + 6 * N + 3 * dimY - 3]); // swap SE with NW of the [iX + 1, iY - 1] field
+                std::swap(f[i + _SE], f[i + _NW + 3 * dimY - 3]); // swap SE with NW of the [iX + 1, iY - 1] field
             }
 
             if(iX > 0) {
-                std::swap(f[i + 3 * N], f[i + 3 * N - 3 * dimY]); // swap W with E of the [iX - 1, iY] field
+                std::swap(f[i + _W], f[i + _E - 3 * dimY]); // swap W with E of the [iX - 1, iY] field
             }
 
 #else
@@ -88,8 +88,4 @@ void SwapD2Q9::stream() {
 #endif
         }
     }
-}
-
-double* SwapD2Q9::getArrayAfterCollision() {
-    return f;
 }

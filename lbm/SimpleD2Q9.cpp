@@ -18,15 +18,15 @@ void SimpleD2Q9::collide() {
             double uSquare = computeUAndUSquare(&f[i], rho, &u[0]);
 
 #ifdef BUNDLE
-            fTmp[i] = (1 - omega) * f[i] + omega * computeLocalEquilibrium(1./36., -1, -1, rho, &u[0], uSquare);
-            fTmp[i + 1] = (1 - omega) * f[i + 1] + omega * computeLocalEquilibrium(1./9., 0, -1, rho, &u[0], uSquare);
-            fTmp[i + 2] = (1 - omega) * f[i + 2] + omega * computeLocalEquilibrium(1./36., 1, -1, rho, &u[0], uSquare);
-            fTmp[i + 3 * N] = (1 - omega) * f[i + 3 * N] + omega * computeLocalEquilibrium(1./9., -1, 0, rho, &u[0], uSquare);
-            fTmp[i + 3 * N + 1] = (1 - omega) * f[i + 3 * N + 1] + omega * computeLocalEquilibrium(4./9., 0, 0, rho, &u[0], uSquare);
-            fTmp[i + 3 * N + 2] = (1 - omega) * f[i + 3 * N + 2] + omega * computeLocalEquilibrium(1./9., 1, 0, rho, &u[0], uSquare);
-            fTmp[i + 6 * N] = (1 - omega) * f[i + 6 * N] + omega * computeLocalEquilibrium(1./36., -1, 1, rho, &u[0], uSquare);
-            fTmp[i + 6 * N + 1] = (1 - omega) * f[i + 6 * N + 1] + omega * computeLocalEquilibrium(1./9., 0, 1, rho, &u[0], uSquare);
-            fTmp[i + 6 * N + 2] = (1 - omega) * f[i  + 6 * N + 2] + omega * computeLocalEquilibrium(1./36., 1, 1, rho, &u[0], uSquare);
+            fTmp[i + _SW] = (1 - omega) * f[i + _SW] + omega * computeLocalEquilibrium(1./36., -1, -1, rho, &u[0], uSquare);
+            fTmp[i + _S] = (1 - omega) * f[i + _S] + omega * computeLocalEquilibrium(1./9., 0, -1, rho, &u[0], uSquare);
+            fTmp[i + _SE] = (1 - omega) * f[i + _SE] + omega * computeLocalEquilibrium(1./36., 1, -1, rho, &u[0], uSquare);
+            fTmp[i + _W] = (1 - omega) * f[i + _W] + omega * computeLocalEquilibrium(1./9., -1, 0, rho, &u[0], uSquare);
+            fTmp[i + _C] = (1 - omega) * f[i + _C] + omega * computeLocalEquilibrium(4./9., 0, 0, rho, &u[0], uSquare);
+            fTmp[i + _E] = (1 - omega) * f[i + _E] + omega * computeLocalEquilibrium(1./9., 1, 0, rho, &u[0], uSquare);
+            fTmp[i + _NW] = (1 - omega) * f[i + _NW] + omega * computeLocalEquilibrium(1./36., -1, 1, rho, &u[0], uSquare);
+            fTmp[i + _N] = (1 - omega) * f[i + _N] + omega * computeLocalEquilibrium(1./9., 0, 1, rho, &u[0], uSquare);
+            fTmp[i + _NE] = (1 - omega) * f[i  + _NE] + omega * computeLocalEquilibrium(1./36., 1, 1, rho, &u[0], uSquare);
 #else
             for (int iF = 0; iF < 9; ++iF) {
                 fTmp[i + iF] = (1 - omega) * f[i + iF] + omega * computeLocalEquilibrium(iF, rho, &u[0], uSquare);
@@ -45,84 +45,82 @@ void SimpleD2Q9::stream() {
 
             //SW
             if(iX > 0 && iY > 0) {
-                f[i] = fTmp[i - 3 * dimY - 3];
+                f[i + _SW] = fTmp[i + _SW - 3 * dimY - 3];
             }
             else {
-                f[i] = fTmp[i + 6 * N + 2]; // swap with NE
+                f[i + _SW] = fTmp[i + _NE]; // swap with NE
             }
 
             //S
             if(iX > 0) {
-                f[i + 1] = fTmp[i + 1 - 3 * dimY];
+                f[i + _S] = fTmp[i + _S - 3 * dimY];
             }
             else {
-                f[i + 1] = fTmp[i + 1 + 6 * N]; // swap with N
+                f[i + _S] = fTmp[i + _N]; // swap with N
             }
 
             //SE
             if(iX < dimX - 1 && iY > 0) {
-                f[i + 2] = fTmp[i + 2 + 3 * dimY - 3];
+                f[i + _SE] = fTmp[i + _SE + 3 * dimY - 3];
             }
             else {
-                f[i + 2] = fTmp[i + 6 * N]; // swap with NW
+                f[i + _SE] = fTmp[i + _NW]; // swap with NW
             }
 
 
             //W
             if(iX > 0) {
-                f[i + 3 * N] = fTmp[i + 3 * N - 3 * dimY];
+                f[i + _W] = fTmp[i + _W - 3 * dimY];
             }
             else {
-                f[i + 3 * N] = fTmp[i + 3 * N + 2]; // swap with E
+                f[i + _W] = fTmp[i + _E]; // swap with E
             }
 
             //C
-            f[i + 3 * N + 1] = fTmp[i + 3 * N + 1];
+            f[i + _C] = fTmp[i + _C];
 
             //E
             if(iX < dimX - 1) {
-                f[i + 3 * N + 2] = fTmp[i + 3 * N + 2 + 3 * dimY];
+                f[i + _E] = fTmp[i + _E + 3 * dimY];
             }
             else {
-                f[i + 3 * N + 2] = fTmp[i + 3 * N]; // swap with W
+                f[i + _E] = fTmp[i + _W]; // swap with W
             }
 
             //NW
             if(iX > 0 && iY < dimY - 1) {
-                f[i + 6 * N] = fTmp[i + 6 * N - 3 * dimY + 3];
+                f[i + _NW] = fTmp[i + _NW - 3 * dimY + 3];
             }
 
 #ifdef CAVITY
             else if(iY == dimY - 1){
-                f[i + 6 * N] = fTmp[i + 2] - 0.3/36.;
+                f[i + _NW] = fTmp[i + _SE] - 0.3/36.;
             }
 #endif
             else {
-                f[i + 6 * N] = fTmp[i + 2]; // swap with SE
+                f[i + _NW] = fTmp[i + _SE]; // swap with SE
             }
 
             //N
             if(iY < dimY - 1) {
-                f[i + 6 * N + 1] = fTmp[i + 6 * N + 1 + 3];
+                f[i + _N] = fTmp[i + _N + 3];
             }
             else {
-                f[i + 6 * N + 1] = f[i + 1]; // swap with S
+                f[i + _N] = f[i + _S]; // swap with S
             }
 
             //NE
             if(iX < dimX - 1 && iY < dimY - 1) {
-                f[i + 6 * N + 2] = fTmp[i + 6 * N + 2 + 3 * dimY + 3];
+                f[i + _NE] = fTmp[i + _NE + 3 * dimY + 3];
             }
 #ifdef CAVITY
             else if(iY == dimY - 1){
-                f[i + 6 * N + 2] = fTmp[i] + 0.3/36.;
+                f[i + _NE] = fTmp[i + _SW] + 0.3/36.;
             }
 #endif
             else {
-                f[i + 6 * N + 2] = fTmp[i]; // swap with SW
+                f[i + _NE] = fTmp[i + _SW]; // swap with SW
             }
-
-
 
 #else
             int i = NUM_ENTRIES_PER_LATTICE * (iX * dimY + iY);
@@ -156,8 +154,4 @@ void SimpleD2Q9::stream() {
 #endif
         }
     }
-}
-
-double* SimpleD2Q9::getArrayAfterCollision() {
-    return fTmp;
 }

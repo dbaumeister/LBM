@@ -18,7 +18,6 @@ public:
 
     void collide();
     void stream();
-    double* getArrayAfterCollision();
 };
 
 #endif //LBM_SWAPSIMULATION_H

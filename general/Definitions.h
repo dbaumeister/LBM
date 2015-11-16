@@ -20,9 +20,6 @@
 //Defining CAVITY shows another setup on the simple implementation
 //#define CAVITY
 
-//Run additional checks by defining CHECK
-//#define CHECK
-
 //Control the problem size with these constants.
 static const int NUM_TIME_MEASUREMENTS = 20;
 static const int NUM_ITERATIONS = 10;

@@ -41,13 +41,6 @@ int main(void)
     GUI gui(title);
 #endif
 
-#ifdef CHECK
-    sim.init();
-    if(!sim.verify()) {
-        return 0;
-    }
-#endif
-
     sim.init(); //do not measure the initialisation step
 
     std::clock_t start;
