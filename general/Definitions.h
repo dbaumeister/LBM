@@ -17,13 +17,13 @@
 //Define BUNDLE to use the bundle data layout
 #define BUNDLE
 
-//Defining CAVITY shows another setup on the simple implementation
+//Defining CAVITY shows another setup on the simple and block implementation
 //#define CAVITY
 
 //Control the problem size with these constants.
 static const int NUM_TIME_MEASUREMENTS = 20;
 static const int NUM_ITERATIONS = 10;
-static const int GRID_SIZE = 512;
+static const int GRID_SIZE = 1024;
 
 static const int N = GRID_SIZE * GRID_SIZE;
 

@@ -52,8 +52,8 @@ void SimpleD2Q9::stream() {
             }
 
             //S
-            if(iX > 0) {
-                f[i + _S] = fTmp[i + _S - 3 * dimY];
+            if(iY > 0) {
+                f[i + _S] = fTmp[i + _S - 3];
             }
             else {
                 f[i + _S] = fTmp[i + _N]; // swap with N
@@ -106,7 +106,7 @@ void SimpleD2Q9::stream() {
                 f[i + _N] = fTmp[i + _N + 3];
             }
             else {
-                f[i + _N] = f[i + _S]; // swap with S
+                f[i + _N] = fTmp[i + _S]; // swap with S
             }
 
             //NE

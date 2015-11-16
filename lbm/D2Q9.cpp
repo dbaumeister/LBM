@@ -11,7 +11,7 @@
 double *calloc64ByteAligned(size_t size) {
     void* ptr = aligned_alloc(64 * sizeof(void*), size);
     if(ptr == nullptr) {
-        std::cout << "Memory allocation failed (" << size << "B)" << std::endl;
+        std::cout << "ERROR: Memory allocation failed (" << size << "B)" << std::endl;
     }
     memset(ptr, 0, size);
     return (double*) ptr;
