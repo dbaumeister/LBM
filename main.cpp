@@ -24,18 +24,32 @@ int main(void)
 
 #ifdef SIMPLE
     SimpleD2Q9 sim(GRID_SIZE, GRID_SIZE);
-    std::string title = "Simple LBM ( 2 - Array )";
+    std::string title = "Simple LBM ( 2 Arrays )";
 #endif
 
 #ifdef SWAP
     SwapD2Q9 sim(GRID_SIZE, GRID_SIZE);
-    std::string title = "Swap LBM ( 1 - Array )";
+    std::string title = "Swap LBM ( 1 Array )";
 #endif
 
 #ifdef BLOCK
     BlockD2Q9 sim(GRID_SIZE, GRID_SIZE);
-    std::string title = "Block LBM ( 2 - Array )";
+    std::string title = "Block LBM ( 2 Arrays )";
 #endif
+
+
+#ifdef BUNDLE
+    title.append(" - Data layout: Bundle");
+#endif
+
+#ifdef COLLOPT
+    title.append(" - Data layout: CollOpt");
+#endif
+
+#ifdef PROPOPT
+    title.append(" - Data layout: PropOpt");
+#endif
+
 
 #ifdef SHOW_GUI
     GUI gui(title);

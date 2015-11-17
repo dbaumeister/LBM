@@ -8,24 +8,28 @@
 //Control the program by defining either SWAP, BLOCK or SIMPLE.
 #define BLOCK
 
+//Define COLLOPT, PROPOPT or BUNDLE to choose the data layout
+#define PROPOPT
+
+//Defining CAVITY shows another setup on the simple and block implementation
+//#define CAVITY
+
+//Control the problem size with these constants.
+static const int NUM_TIME_MEASUREMENTS = 10;
+static const int NUM_ITERATIONS = 10;
+static const int GRID_SIZE = 512;
+
+static const int N = GRID_SIZE * GRID_SIZE;
+
 //Show the GUI by defining SHOW_GUI here.
 //#define SHOW_GUI
 
 //Define OUTPUT_TO_LOGFILE to redirect std::cout to the file "log"
 #define OUTPUT_TO_LOGFILE
 
-//Define BUNDLE to use the bundle data layout
-#define BUNDLE
-
-//Defining CAVITY shows another setup on the simple and block implementation
-//#define CAVITY
-
-//Control the problem size with these constants.
-static const int NUM_TIME_MEASUREMENTS = 20;
-static const int NUM_ITERATIONS = 10;
-static const int GRID_SIZE = 1024;
-
-static const int N = GRID_SIZE * GRID_SIZE;
 
 
 #endif //GRAPHICS_DEFINITIONS_H
+
+
+

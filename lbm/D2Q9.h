@@ -36,9 +36,10 @@ double computeRho(double* f);
 
 double computeUAndUSquare(double* f, double rho, double* u);
 
-#ifdef BUNDLE
-double computeLocalEquilibrium(double weight, int cx, int cy, const double rho, const double* u, const double uSquare);
-#else
+#if defined(BUNDLE) | defined(PROPOPT)
+double computeLocalEquilibrium(const double weight, const int cx, const int cy, const double rho, const double* u, const double uSquare);
+#endif
+#ifdef COLLOPT
 double computeLocalEquilibrium(int iF, double rho, double* u, double uSquare);
 #endif
 
@@ -52,6 +53,18 @@ static const int _E = 3 * N + 2;
 static const int _NW = 6 * N;
 static const int _N = 6 * N + 1;
 static const int _NE = 6 * N + 2;
+#endif
+
+#ifdef PROPOPT
+static const int _SW = 0;
+static const int _S = N;
+static const int _SE = 2 * N;
+static const int _W = 3 * N;
+static const int _C = 4 * N;
+static const int _E = 5 * N;
+static const int _NW = 6 * N;
+static const int _N = 7 * N;
+static const int _NE = 8 * N;
 #endif
 
 static const int half = 4; //(9-1)/2;
