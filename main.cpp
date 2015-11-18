@@ -63,11 +63,6 @@ int main(void)
     VectorGrid vel(GRID_SIZE, GRID_SIZE);
 #endif
 
-
-#ifdef OUTPUT_TO_LOGFILE
-    freopen("log", "a", stdout);
-#endif
-
     int i = 0;
     int j = 0;
     for(; j < NUM_TIME_MEASUREMENTS; ++j) {
@@ -98,12 +93,31 @@ int main(void)
     }
 
 
+#ifdef OUTPUT_TO_LOGFILE
+    if( freopen("log", "a", stdout) == nullptr) {
+        return 0;
+    };
+#endif
+
+
+#ifndef SHOW_GUI
     std::cout << "Finished " << title << std::endl;
     std::cout << j << " * " << NUM_ITERATIONS << " Iterations on a " << GRID_SIZE << "x" << GRID_SIZE << " grid." << std::endl;
+
+    double sum = 0.;
     std::cout << "Elapsed times: ";
     for(int i = 0; i < j; ++i) {
         std::cout << elapsedTimes[i] << "; ";
+        sum += elapsedTimes[i];
     }
-    std::cout << std::endl << std::endl;
+
+    std::cout << std::endl;
+    double mlups = NUM_TIME_MEASUREMENTS * NUM_ITERATIONS;
+    mlups /= 1.e6;
+    mlups *= N;
+    mlups /= sum;
+    std::cout << "MLUPS: " <<  mlups << std::endl;
+    std::cout << std::endl;
+#endif
     return 0;
 }
