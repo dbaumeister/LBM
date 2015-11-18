@@ -196,71 +196,117 @@ void SimpleD2Q9::stream() {
             int i = iX * dimY + iY;
 
             //SW
-            if(iX > 0 && iY > 0) {
+            if (iX > 0 && iY > 0) {
                 f[i + _SW] = fTmp[i + _SW - dimY - 1];
             }
             else {
                 f[i + _SW] = fTmp[i + _NE]; // swap with NE
             }
+        }
+    }
+    for (int iX = 0; iX < dimX; ++iX) {
+        for (int iY = 0; iY < dimY; ++iY) {
 
+            int i = iX * dimY + iY;
             //S
-            if(iY > 0) {
+            if (iY > 0) {
                 f[i + _S] = fTmp[i + _S - 1];
             }
             else {
                 f[i + _S] = fTmp[i + _N]; // swap with N
             }
+        }
+    }
+    for (int iX = 0; iX < dimX; ++iX) {
+        for (int iY = 0; iY < dimY; ++iY) {
 
+            int i = iX * dimY + iY;
             //SE
-            if(iX < dimX - 1 && iY > 0) {
+            if (iX < dimX - 1 && iY > 0) {
                 f[i + _SE] = fTmp[i + _SE + dimY - 1];
             }
             else {
                 f[i + _SE] = fTmp[i + _NW]; // swap with NW
             }
+        }
+    }
+
+    for (int iX = 0; iX < dimX; ++iX) {
+        for (int iY = 0; iY < dimY; ++iY) {
 
 
+            int i = iX * dimY + iY;
             //W
-            if(iX > 0) {
+            if (iX > 0) {
                 f[i + _W] = fTmp[i + _W - dimY];
             }
             else {
                 f[i + _W] = fTmp[i + _E]; // swap with E
             }
+        }
+    }
 
+    for (int iX = 0; iX < dimX; ++iX) {
+        for (int iY = 0; iY < dimY; ++iY) {
+
+            int i = iX * dimY + iY;
             //C
             f[i + _C] = fTmp[i + _C];
+        }
+    }
 
+    for (int iX = 0; iX < dimX; ++iX) {
+        for (int iY = 0; iY < dimY; ++iY) {
+
+            int i = iX * dimY + iY;
             //E
-            if(iX < dimX - 1) {
+            if (iX < dimX - 1) {
                 f[i + _E] = fTmp[i + _E + dimY];
             }
             else {
                 f[i + _E] = fTmp[i + _W]; // swap with W
             }
+        }
+    }
 
+    for (int iX = 0; iX < dimX; ++iX) {
+        for (int iY = 0; iY < dimY; ++iY) {
+
+            int i = iX * dimY + iY;
             //NW
-            if(iX > 0 && iY < dimY - 1) {
+            if (iX > 0 && iY < dimY - 1) {
                 f[i + _NW] = fTmp[i + _NW - dimY + 1];
             }
 
 #ifdef CAVITY
-            else if(iY == dimY - 1){
-                f[i + _NW] = fTmp[i + _SE] - 0.3/36.;
-            }
+                else if(iY == dimY - 1){
+                    f[i + _NW] = fTmp[i + _SE] - 0.3/36.;
+                }
 #endif
             else {
                 f[i + _NW] = fTmp[i + _SE]; // swap with SE
             }
+        }
+    }
 
+    for (int iX = 0; iX < dimX; ++iX) {
+        for (int iY = 0; iY < dimY; ++iY) {
+
+            int i = iX * dimY + iY;
             //N
-            if(iY < dimY - 1) {
+            if (iY < dimY - 1) {
                 f[i + _N] = fTmp[i + _N + 1];
             }
             else {
                 f[i + _N] = fTmp[i + _S]; // swap with S
             }
+        }
+    }
 
+    for (int iX = 0; iX < dimX; ++iX) {
+        for (int iY = 0; iY < dimY; ++iY) {
+
+            int i = iX * dimY + iY;
             //NE
             if(iX < dimX - 1 && iY < dimY - 1) {
                 f[i + _NE] = fTmp[i + _NE + dimY + 1];
