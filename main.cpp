@@ -19,8 +19,16 @@
 #include "lbm/BlockD2Q9.h"
 #endif
 
-int main(void)
+int main(int argc, char** args)
 {
+
+    //Get number of iterations from command line
+    if(argc < 2) {
+        std::cout << "Please specify the number of iterations." << std::endl;
+        return -1;
+    }
+
+    int numIterations = atoi(args[1]);
 
 #ifdef SIMPLE
     SimpleD2Q9 sim(GRID_SIZE, GRID_SIZE);
@@ -50,48 +58,36 @@ int main(void)
     title.append(" - Data layout: PropOpt");
 #endif
 
+    std::cout << "Running " << title << std::endl;
+    std::cout << numIterations << " Iterations on a " << GRID_SIZE << "x" << GRID_SIZE << " grid." << std::endl;
 
 #ifdef SHOW_GUI
     GUI gui(title);
+    VectorGrid vel(GRID_SIZE, GRID_SIZE);
 #endif
 
     sim.init(); //do not measure the initialisation step
 
+    int i = 0;
+
+#ifndef SHOW_GUI
     std::clock_t start;
-    double elapsedTimes[NUM_TIME_MEASUREMENTS];
-#ifdef SHOW_GUI
-    VectorGrid vel(GRID_SIZE, GRID_SIZE);
+    start = std::clock();
 #endif
 
-    int i = 0;
-    int j = 0;
-    for(; j < NUM_TIME_MEASUREMENTS; ++j) {
+    for(i = 0; i < numIterations; ++i) {
 
 #ifdef SHOW_GUI
         if(gui.shouldClose()) {
-            std::cout << "---- Aborted by User Input ----" << std::endl;
             break;
         }
+
+        sim.getVel(vel);
+        gui.display(vel);
 #endif
-
-        start = std::clock();
-        for(i = 0; i < NUM_ITERATIONS; ++i) {
-
-#ifdef SHOW_GUI
-            if(gui.shouldClose()) {
-                break;
-            }
-
-            sim.getVel(vel);
-            gui.display(vel);
-#endif
-            sim.collide();
-            sim.stream();
-        }
-
-        elapsedTimes[j] = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+        sim.collide();
+        sim.stream();
     }
-
 
 #ifdef OUTPUT_TO_LOGFILE
     if( freopen("log", "a", stdout) == nullptr) {
@@ -101,21 +97,16 @@ int main(void)
 
 
 #ifndef SHOW_GUI
+    double elapsedTime = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+
     std::cout << "Finished " << title << std::endl;
-    std::cout << j << " * " << NUM_ITERATIONS << " Iterations on a " << GRID_SIZE << "x" << GRID_SIZE << " grid." << std::endl;
+    std::cout << numIterations << " Iterations on a " << GRID_SIZE << "x" << GRID_SIZE << " grid." << std::endl;
+    std::cout << "Elapsed time: " << elapsedTime << std::endl;
 
-    double sum = 0.;
-    std::cout << "Elapsed times: ";
-    for(int i = 0; i < j; ++i) {
-        std::cout << elapsedTimes[i] << "; ";
-        sum += elapsedTimes[i];
-    }
-
-    std::cout << std::endl;
-    double mlups = NUM_TIME_MEASUREMENTS * NUM_ITERATIONS;
-    mlups /= 1.e6;
+    double mlups = numIterations;
+    mlups /= elapsedTime;
     mlups *= N;
-    mlups /= sum;
+    mlups /= 1.e6;
     std::cout << "MLUPS: " <<  mlups << std::endl;
     std::cout << std::endl;
 #endif
