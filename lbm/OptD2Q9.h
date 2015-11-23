@@ -9,14 +9,14 @@
 
 static const int BLOCK_SIZE = 8;
 
-class BlockD2Q9 : public D2Q9{
+class OptD2Q9 : public D2Q9{
 
 public:
-    BlockD2Q9(int dimX, int dimY)
+    OptD2Q9(int dimX, int dimY)
             : D2Q9(dimX, dimY),
-              fTmp(calloc64ByteAligned(dimX * dimY * NUM_ENTRIES_PER_LATTICE * sizeof(double))){}
+              fTmp(calloc64ByteAligned(dimX * dimY * 9 * sizeof(double))){}
 
-    ~BlockD2Q9() {
+    ~OptD2Q9() {
         free(fTmp);
     }
 

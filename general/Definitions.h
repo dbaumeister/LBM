@@ -5,24 +5,21 @@
 #ifndef GRAPHICS_DEFINITIONS_H
 #define GRAPHICS_DEFINITIONS_H
 
-//Control the program by defining either SWAP, BLOCK or SIMPLE.
-#define BLOCK
-
-//Define COLLOPT, PROPOPT or BUNDLE to choose the data layout
-#define COLLOPT
+//Control the program by defining either OPT or SIMPLE.
+#define OPT
 
 //Control the problem size with these constants.
 static const int GRID_SIZE = 64;
 static const int N = GRID_SIZE * GRID_SIZE;
 
 //Show the GUI by defining SHOW_GUI here.
-//#define SHOW_GUI
+#define SHOW_GUI
 
 //Defining CAVITY shows another setup on the simple and block implementation
-//#define CAVITY
+#define CAVITY
 
 //Define OUTPUT_TO_LOGFILE to redirect std::cout to the file "log"
-//#define OUTPUT_TO_LOGFILE
+#define OUTPUT_TO_LOGFILE
 
 
 

@@ -11,12 +11,8 @@
 #include "lbm/SimpleD2Q9.h"
 #endif
 
-#ifdef SWAP
-#include "lbm/SwapD2Q9.h"
-#endif
-
-#ifdef BLOCK
-#include "lbm/BlockD2Q9.h"
+#ifdef OPT
+#include "lbm/OptD2Q9.h"
 #endif
 
 int main(int argc, char** args)
@@ -35,27 +31,9 @@ int main(int argc, char** args)
     std::string title = "Simple LBM ( 2 Arrays )";
 #endif
 
-#ifdef SWAP
-    SwapD2Q9 sim(GRID_SIZE, GRID_SIZE);
-    std::string title = "Swap LBM ( 1 Array )";
-#endif
-
-#ifdef BLOCK
-    BlockD2Q9 sim(GRID_SIZE, GRID_SIZE);
-    std::string title = "Block LBM ( 2 Arrays )";
-#endif
-
-
-#ifdef BUNDLE
-    title.append(" - Data layout: Bundle");
-#endif
-
-#ifdef COLLOPT
-    title.append(" - Data layout: CollOpt");
-#endif
-
-#ifdef PROPOPT
-    title.append(" - Data layout: PropOpt");
+#ifdef OPT
+    OptD2Q9 sim(GRID_SIZE, GRID_SIZE);
+    std::string title = "Opt LBM ( 2 Arrays )";
 #endif
 
     std::cout << "Running " << title << std::endl;
