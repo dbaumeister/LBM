@@ -6,7 +6,7 @@
 #define GRAPHICS_DEFINITIONS_H
 
 //Control the program by defining either SWAP, BLOCK or SIMPLE.
-#define SIMPLE
+#define BLOCK
 
 //Define COLLOPT, PROPOPT or BUNDLE to choose the data layout
 #define COLLOPT
@@ -22,7 +22,7 @@ static const int N = GRID_SIZE * GRID_SIZE;
 //#define CAVITY
 
 //Define OUTPUT_TO_LOGFILE to redirect std::cout to the file "log"
-#define OUTPUT_TO_LOGFILE
+//#define OUTPUT_TO_LOGFILE
 
 
 
