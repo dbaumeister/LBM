@@ -27,8 +27,6 @@ void OptD2Q9::collide() {
     int i = 0;
     //lower left corner = SW
     collision(rho, &u[0], uSquare, i);
-
-    //Stream update to neighbors
     fTmp[_NE] = f[_SW]; //BC
     fTmp[_N] = f[_S]; //BC
     fTmp[_NW] = f[_SE]; //BC
@@ -43,8 +41,6 @@ void OptD2Q9::collide() {
     for(int iY = 1; iY < dimY - 1; ++iY) {
         i += 3;
         collision(rho, &u[0], uSquare, i);
-
-        //Stream update to neighbors
         fTmp[i + _NE] = f[i + _SW]; //BC
         fTmp[i + _S - 3] = f[i + _S];
         fTmp[i + _SE + 3 * dimY - 3] = f[i + _SE];
@@ -59,8 +55,6 @@ void OptD2Q9::collide() {
     //upper left corner = NW
     i += 3;
     collision(rho, &u[0], uSquare, i);
-
-    //Stream update to neighbors
     fTmp[i + _NE] = f[i + _SW]; //BC
     fTmp[i + _S - 3] = f[i + _S];
     fTmp[i + _SE + 3 * dimY - 3] = f[i + _SE];
@@ -81,8 +75,6 @@ void OptD2Q9::collide() {
     for(int iX = 1; iX < dimX - 1; ++iX) {
         i += 3 * dimY;
         collision(rho, &u[0], uSquare, i);
-
-        //Stream update to neighbors
         fTmp[i + _NE] = f[i + _SW]; //BC
         fTmp[i + _N] = f[i + _S]; //BC
         fTmp[i + _NW] = f[i + _SE]; //BC
@@ -99,8 +91,6 @@ void OptD2Q9::collide() {
     //lower right corner = SE
     i += 3 * dimY;
     collision(rho, &u[0], uSquare, i);
-
-    //Stream update to neighbors
     fTmp[i + _NE] = f[i + _SW]; //BC
     fTmp[i + _N] = f[i + _S]; //BC
     fTmp[i + _NW] = f[i + _SE]; //BC
@@ -141,8 +131,6 @@ void OptD2Q9::collide() {
     for(int iY = 1; iY < dimY - 1; ++iY) {
         i += 3;
         collision(rho, &u[0], uSquare, i);
-
-        //Stream update to neighbors
         fTmp[i + _SW - 3 * dimY - 3] = f[i + _SW];
         fTmp[i + _S - 3] = f[i + _S];
         fTmp[i + _NW] = f[i + _SE]; //BC
@@ -158,17 +146,18 @@ void OptD2Q9::collide() {
     //upper right corner
     i += 3;
     collision(rho, &u[0], uSquare, i);
-
-    //Stream update to neighbors
     fTmp[i + _SW - 3 * dimY - 3] = f[i + _SW];
     fTmp[i + _S - 3] = f[i + _S];
-    fTmp[i + _NW] = f[i + _SE]; //BC
+    fTmp[i + _NW] = f[i + _SE]; // BC
     fTmp[i + _W - 3 * dimY] = f[i + _W];
     fTmp[i + _C] = f[i + _C];
+    fTmp[i + _W] = f[i + _E]; // BC
+
     fTmp[i + _S] = f[i + _N]; //BC
+
 #ifdef CAVITY
-    fTmp[i + _SE] = f[i + _NW] + 0.3/36.; //BC
-    fTmp[i + _SW] = f[i + _NE] - 0.3/36.; //BC
+    fTmp[i + _SE] = f[i + _NW] + 0.3/36. ; //BC
+    fTmp[i + _SW] = f[i + _NE] - 0.3/36. ; //BC
 #else
     fTmp[i + _SE] = f[i + _NW]; //BC
     fTmp[i + _SW] = f[i + _NE]; //BC
@@ -179,8 +168,6 @@ void OptD2Q9::collide() {
     for(int iX = 1; iX < dimX - 1; ++iX) {
         i += 3 * dimY;
         collision(rho, &u[0], uSquare, i);
-
-        //Stream update to neighbors
         fTmp[i + _SW - 3 * dimY - 3] = f[i + _SW];
         fTmp[i + _S - 3] = f[i + _S];
         fTmp[i + _SE + 3 * dimY - 3] = f[i + _SE];
