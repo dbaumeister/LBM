@@ -12,9 +12,13 @@ void OptD2Q9::collide() {
                 for (int iY = iYY; iY < std::min(iYY + BLOCK_SIZE, dimY); ++iY) {
 
                     int i = 3 * (iX * dimY + iY);
+
                     double u[2];
-                    double rho = computeRho(&f[i]);
-                    double uSquare = computeUAndUSquare(&f[i], rho, &u[0]);
+                    double rho = f[i + _SW] + f[i + _S] + f[i + _SE] + f[i + _W] + f[i + _C] + f[i + _E] + f[i + _NW] + f[i + _N] + f[i + _NE];
+
+                    u[0] = (- f[i + _SW] + f[i + _SE] - f[i + _W] + f[i + _E]  - f[i + _NW] + f[i + _NE]) / rho;
+                    u[1] = (- f[i + _SW] - f[i + _S] - f[i + _SE] + f[i + _NW] + f[i + _N] + f[i + _NE]) / rho;
+                    double uSquare =  u[0] * u[0] + u[1] * u[1];
 
                     f[i + _SW] = (1 - omega) * f[i + _SW] +
                                     omega * computeLocalEquilibrium(1. / 36., -1, -1, rho, &u[0], uSquare);

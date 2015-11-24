@@ -42,7 +42,7 @@ double computeUAndUSquare(double* f, double rho, double* u) {
 
     u[0] = vx / rho;
     u[1] = vy / rho;
-    return (vx * vx + vy * vy) / rho;
+    return u[0] * u[0] + u[1] * u[1];
 }
 
 
