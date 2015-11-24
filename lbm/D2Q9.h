@@ -56,8 +56,8 @@ public:
     void getVel(VectorGrid& vel);
 
 protected:
-    int dimX;
-    int dimY;
+    const int dimX;
+    const int dimY;
     double* f;
 };
 

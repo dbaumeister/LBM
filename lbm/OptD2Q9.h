@@ -25,6 +25,9 @@ public:
 
 private:
     double* fTmp;
+
+    //Collision is always done the same -> inlined function to avoid return jumps
+    inline void collision(double& rho, double* u, double& uSquare, int i);
 };
 
 #endif //LBM_BLOCKSIMULATION_H
