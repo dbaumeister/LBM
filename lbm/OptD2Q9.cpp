@@ -4,21 +4,48 @@
 
 #include "OptD2Q9.h"
 
+static double wcorner = 1./36.;
+static double wedge = 1./9.;
+static double wcenter = 4./9.;
+
 void OptD2Q9::collision(double& rho, double* u, double& uSquare, int i) {
     rho = f[i + _SW] + f[i + _S] + f[i + _SE] + f[i + _W] + f[i + _C] + f[i + _E] + f[i + _NW] + f[i + _N] + f[i + _NE];
     u[0] = (- f[i + _SW] + f[i + _SE] - f[i + _W] + f[i + _E]  - f[i + _NW] + f[i + _NE]) / rho;
     u[1] = (- f[i + _SW] - f[i + _S] - f[i + _SE] + f[i + _NW] + f[i + _N] + f[i + _NE]) / rho;
     uSquare =  u[0] * u[0] + u[1] * u[1];
 
-    f[i + _SW] = (1 - omega) * f[i + _SW] + omega * computeLocalEquilibrium(1. / 36., -1, -1, rho, &u[0], uSquare);
-    f[i + _S] = (1 - omega) * f[i + _S] + omega * computeLocalEquilibrium(1. / 9., 0, -1, rho, &u[0], uSquare);
-    f[i + _SE] = (1 - omega) * f[i + _SE] + omega * computeLocalEquilibrium(1. / 36., 1, -1, rho, &u[0], uSquare);
-    f[i + _W] = (1 - omega) * f[i + _W] + omega * computeLocalEquilibrium(1. / 9., -1, 0, rho, &u[0], uSquare);
-    f[i + _C] = (1 - omega) * f[i + _C] + omega * computeLocalEquilibrium(4. / 9., 0, 0, rho, &u[0], uSquare);
-    f[i + _E] = (1 - omega) * f[i + _E] + omega * computeLocalEquilibrium(1. / 9., 1, 0, rho, &u[0], uSquare);
-    f[i + _NW] = (1 - omega) * f[i + _NW] + omega * computeLocalEquilibrium(1. / 36., -1, 1, rho, &u[0], uSquare);
-    f[i + _N] = (1 - omega) * f[i + _N] + omega * computeLocalEquilibrium(1. / 9., 0, 1, rho, &u[0], uSquare);
-    f[i + _NE] = (1 - omega) * f[i + _NE] + omega * computeLocalEquilibrium(1. / 36., 1, 1, rho, &u[0], uSquare);
+    //cs = 1 / sqrt(3)
+    double c_u = u[0] + u[1];
+    double feq = rho * wcorner * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
+    double feqinv = feq - 2 * rho * wcorner * 3.f * c_u;
+
+    f[i + _NE] = (1 - omega) * f[i + _NE] + omega * feq;
+    f[i + _SW] = (1 - omega) * f[i + _SW] + omega * feqinv;
+
+    c_u = u[0] - u[1];
+    feq = rho * wcorner * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
+    feqinv = feq - 2 * rho * wcorner * 3.f * c_u;
+
+    f[i + _SE] = (1 - omega) * f[i + _SE] + omega * feq;
+    f[i + _NW] = (1 - omega) * f[i + _NW] + omega * feqinv;
+
+    c_u = u[1];
+    feq = rho * wedge * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
+    feqinv = feq - 2 * rho * wedge * 3.f * c_u;
+
+    f[i + _N] = (1 - omega) * f[i + _N] + omega * feq;
+    f[i + _S] = (1 - omega) * f[i + _S] + omega * feqinv;
+
+
+    c_u = u[0];
+    feq = rho * wedge * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
+    feqinv = feq - 2 * rho * wedge * 3.f * c_u;
+
+    f[i + _E] = (1 - omega) * f[i + _E] + omega * feq;
+    f[i + _W] = (1 - omega) * f[i + _W] + omega * feqinv;
+
+    f[i + _C] = (1 - omega) * f[i + _C] + omega * rho * wcenter * (1.f - 1.5f * uSquare);
+
 }
 
 void OptD2Q9::collide() {
