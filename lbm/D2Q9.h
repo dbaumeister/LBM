@@ -12,7 +12,6 @@
 #include "../scene/Grid.h"
 
 static const double omega = 0.7;
-static const double omegaInv = 1 - omega;
 
 double *calloc64ByteAligned(size_t size);
 
