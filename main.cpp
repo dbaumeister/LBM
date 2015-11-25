@@ -28,12 +28,12 @@ int main(int argc, char** args)
 
 #ifdef SIMPLE
     SimpleD2Q9 sim(GRID_SIZE, GRID_SIZE);
-    std::string title = "Simple LBM ( 2 Arrays )";
+    std::string title = "Simple LBM";
 #endif
 
 #ifdef OPT
     OptD2Q9 sim(GRID_SIZE, GRID_SIZE);
-    std::string title = "Opt LBM ( 2 Arrays )";
+    std::string title = "Opt LBM";
 #endif
 
     std::cout << "Running " << title << std::endl;

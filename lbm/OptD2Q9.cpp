@@ -24,39 +24,36 @@ void OptD2Q9::collision(double& rho, double* u, double& uSquare, const int i) {
     double feq = rho * wcorner * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
     double feqinv = feq - 2 * rho * wcorner * 3.f * c_u;
 
-    f[i + _NE] = omegaInv * f[i + _NE] + omega * feq;
-    f[i + _SW] = omegaInv * f[i + _SW] + omega * feqinv;
+    double t1 = omegaInv * f[i + _NE] + omega * feq;
+    f[i + _NE]  = omegaInv * f[i + _SW] + omega * feqinv;
+    f[i + _SW] = t1;
 
     c_u = u[0] - u[1];
     feq = rho * wcorner * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
     feqinv = feq - 2 * rho * wcorner * 3.f * c_u;
 
-    f[i + _SE] = omegaInv * f[i + _SE] + omega * feq;
-    f[i + _NW] = omegaInv * f[i + _NW] + omega * feqinv;
+    double t2 = omegaInv * f[i + _SE] + omega * feq;
+    f[i + _SE] = omegaInv * f[i + _NW] + omega * feqinv;
+    f[i + _NW] = t2;
 
     c_u = u[1];
     feq = rho * wedge * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
     feqinv = feq - 2 * rho * wedge * 3.f * c_u;
 
-    f[i + _N] = omegaInv * f[i + _N] + omega * feq;
-    f[i + _S] = omegaInv * f[i + _S] + omega * feqinv;
+    double t3 = omegaInv * f[i + _N] + omega * feq;
+    f[i + _N] = omegaInv * f[i + _S] + omega * feqinv;
+    f[i + _S] = t3;
 
 
     c_u = u[0];
     feq = rho * wedge * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
     feqinv = feq - 2 * rho * wedge * 3.f * c_u;
 
-    f[i + _E] = omegaInv * f[i + _E] + omega * feq;
-    f[i + _W] = omegaInv * f[i + _W] + omega * feqinv;
+    double t4 = omegaInv * f[i + _E] + omega * feq;
+    f[i + _E] = omegaInv * f[i + _W] + omega * feqinv;
+    f[i + _W] = t4;
 
     f[i + _C] = omegaInv * f[i + _C] + omega * rho * wcenter * (1.f - 1.5f * uSquare);
-
-    //TODO implicit swap
-    std::swap(f[i + _SW], f[i + _NE]); //SW & NE
-    std::swap(f[i + _S], f[i + _N]); //S & N
-    std::swap(f[i + _SE], f[i + _NW]); //SE & NW
-    std::swap(f[i + _W], f[i + _E]); //W & E
-
 }
 
 void OptD2Q9::next() {
@@ -103,8 +100,6 @@ void OptD2Q9::next() {
 
             i += 3;
             collision(rho, &u[0], uSquare, i);
-
-            //Stream update to neighbors
             std::swap(f[i + _E], f[i + _W - dimY3]);
             std::swap(f[i + _NE], f[i + _SW - dimY3 - 3]);
             std::swap(f[i + _SE], f[i + _NW - dimY3 + 3]);
