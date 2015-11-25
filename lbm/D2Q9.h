@@ -11,17 +11,8 @@
 #include "../general/Definitions.h"
 #include "../scene/Grid.h"
 
-static const int c[9][2] = {
-        {0,0},
-        {-1,1}, {-1,0}, {-1,-1}, {0,-1},
-        {1,-1}, {1,0}, {1,1},
-        {0,1}
-};
-
-static const double w[9] = { 4./9., 1./36., 1./9., 1./36., 1./9.,
-                           1./36., 1./9., 1./36., 1./9. };
-
 static const double omega = 0.7;
+static const double omegaInv = 1 - omega;
 
 double *calloc64ByteAligned(size_t size);
 
@@ -49,9 +40,7 @@ public:
     virtual ~D2Q9();
 
     void init();
-
-    virtual void collide() = 0;
-    virtual void stream() = 0;
+    virtual void next() = 0;
 
     void getVel(VectorGrid& vel);
 

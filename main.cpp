@@ -63,8 +63,7 @@ int main(int argc, char** args)
         sim.getVel(vel);
         gui.display(vel);
 #endif
-        sim.collide();
-        sim.stream();
+        sim.next();
     }
 
 #ifdef OUTPUT_TO_LOGFILE

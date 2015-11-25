@@ -19,39 +19,40 @@ void OptD2Q9::collision(double& rho, double* u, double& uSquare, int i) {
     double feq = rho * wcorner * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
     double feqinv = feq - 2 * rho * wcorner * 3.f * c_u;
 
-    f[i + _NE] = (1 - omega) * f[i + _NE] + omega * feq;
-    f[i + _SW] = (1 - omega) * f[i + _SW] + omega * feqinv;
+    f[i + _NE] = omegaInv * f[i + _NE] + omega * feq;
+    f[i + _SW] = omegaInv * f[i + _SW] + omega * feqinv;
 
     c_u = u[0] - u[1];
     feq = rho * wcorner * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
     feqinv = feq - 2 * rho * wcorner * 3.f * c_u;
 
-    f[i + _SE] = (1 - omega) * f[i + _SE] + omega * feq;
-    f[i + _NW] = (1 - omega) * f[i + _NW] + omega * feqinv;
+    f[i + _SE] = omegaInv * f[i + _SE] + omega * feq;
+    f[i + _NW] = omegaInv * f[i + _NW] + omega * feqinv;
 
     c_u = u[1];
     feq = rho * wedge * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
     feqinv = feq - 2 * rho * wedge * 3.f * c_u;
 
-    f[i + _N] = (1 - omega) * f[i + _N] + omega * feq;
-    f[i + _S] = (1 - omega) * f[i + _S] + omega * feqinv;
+    f[i + _N] = omegaInv * f[i + _N] + omega * feq;
+    f[i + _S] = omegaInv * f[i + _S] + omega * feqinv;
 
 
     c_u = u[0];
     feq = rho * wedge * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
     feqinv = feq - 2 * rho * wedge * 3.f * c_u;
 
-    f[i + _E] = (1 - omega) * f[i + _E] + omega * feq;
-    f[i + _W] = (1 - omega) * f[i + _W] + omega * feqinv;
+    f[i + _E] = omegaInv * f[i + _E] + omega * feq;
+    f[i + _W] = omegaInv * f[i + _W] + omega * feqinv;
 
-    f[i + _C] = (1 - omega) * f[i + _C] + omega * rho * wcenter * (1.f - 1.5f * uSquare);
+    f[i + _C] = omegaInv * f[i + _C] + omega * rho * wcenter * (1.f - 1.5f * uSquare);
 
 }
 
-void OptD2Q9::collide() {
+void OptD2Q9::next() {
     double rho, u[2], uSquare;
-
+    int dimY3 = 3 * dimY;
     int i = 0;
+
     //lower left corner = SW
     collision(rho, &u[0], uSquare, i);
     fTmp[_NE] = f[_SW]; //BC
@@ -100,7 +101,7 @@ void OptD2Q9::collide() {
     //lower boundary = S
     i = 0;
     for(int iX = 1; iX < dimX - 1; ++iX) {
-        i += 3 * dimY;
+        i += dimY3;
         collision(rho, &u[0], uSquare, i);
         fTmp[i + _NE] = f[i + _SW]; //BC
         fTmp[i + _N] = f[i + _S]; //BC
@@ -116,7 +117,7 @@ void OptD2Q9::collide() {
 
 
     //lower right corner = SE
-    i += 3 * dimY;
+    i += dimY3;
     collision(rho, &u[0], uSquare, i);
     fTmp[i + _NE] = f[i + _SW]; //BC
     fTmp[i + _N] = f[i + _S]; //BC
@@ -193,7 +194,7 @@ void OptD2Q9::collide() {
     //upper boundary = N
     i = 3 * (dimY - 1);
     for(int iX = 1; iX < dimX - 1; ++iX) {
-        i += 3 * dimY;
+        i += dimY3;
         collision(rho, &u[0], uSquare, i);
         fTmp[i + _SW - 3 * dimY - 3] = f[i + _SW];
         fTmp[i + _S - 3] = f[i + _S];
@@ -210,8 +211,7 @@ void OptD2Q9::collide() {
         fTmp[i + _SW] = f[i + _NE]; //BC
 #endif
     }
-}
 
-void OptD2Q9::stream() {
+    //Swap array pointers
     std::swap(f, fTmp);
 }

@@ -111,3 +111,8 @@ void SimpleD2Q9::stream() {
         }
     }
 }
+
+void SimpleD2Q9::next() {
+    collide();
+    stream();
+}

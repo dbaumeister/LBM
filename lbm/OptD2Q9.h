@@ -20,8 +20,7 @@ public:
         free(fTmp);
     }
 
-    void collide();
-    void stream();
+    void next();
 
 private:
     double* fTmp;

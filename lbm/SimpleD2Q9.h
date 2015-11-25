@@ -19,11 +19,13 @@ public:
         free(fTmp);
     }
 
-    void collide();
-    void stream();
+    void next();
 
 private:
     double* fTmp;
+
+    void collide();
+    void stream();
 };
 
 #endif //LBM_SIMULATION_H

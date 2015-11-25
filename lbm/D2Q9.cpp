@@ -49,7 +49,6 @@ double computeUAndUSquare(double* f, double rho, double* u) {
 /**
  * Computes the local equilibrium for a given velocity.
  */
-
 double computeLocalEquilibrium(const double weight, const int cx, const int cy, const double rho, const double* u, const double uSquare) {
     double c_u = cx * u[0] + cy * u[1];
     //cs = 1 / sqrt(3)
