@@ -7,8 +7,6 @@
 
 #include "D2Q9.h"
 
-static const int BLOCK_SIZE = 8;
-
 class OptD2Q9 : public D2Q9{
 
 public:

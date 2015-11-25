@@ -10,6 +10,9 @@ static const double wcenter = 4./9.;
 
 static const double omegaInv = 1 - omega;
 
+
+static const int BLOCK_SIZE = 8;
+
 void OptD2Q9::collision(double& rho, double* u, double& uSquare, const int i) {
     rho = f[i + _SW] + f[i + _S] + f[i + _SE] + f[i + _W] + f[i + _C] + f[i + _E] + f[i + _NW] + f[i + _N] + f[i + _NE];
     u[0] = (- f[i + _SW] + f[i + _SE] - f[i + _W] + f[i + _E]  - f[i + _NW] + f[i + _NE]) / rho;
@@ -132,27 +135,23 @@ void OptD2Q9::next() {
     fTmp[i + _SW] = f[i + _NE]; //BC
 
     //inner block
-    for (int iXX = 1; iXX < dimX - 1; iXX += BLOCK_SIZE) {
-        for (int iYY = 1; iYY < dimY - 1; iYY += BLOCK_SIZE) {
+    for(int iX = 1; iX < dimX - 1; ++iX) {
+        int i = iX * dimY3;
+        for (int iY = 1; iY < dimY - 1; ++iY) {
+            i += 3;
+            collision(rho, &u[0], uSquare, i);
 
-            for(int iX = iXX; iX < std::min(iXX + BLOCK_SIZE, dimX - 1); ++iX) {
-                for (int iY = iYY; iY < std::min(iYY + BLOCK_SIZE, dimY - 1); ++iY) {
-                    int i = 3 * (iX * dimY + iY);
-                    collision(rho, &u[0], uSquare, i);
+            //Stream update to neighbors
+            fTmp[i + _SW - 3 * dimY - 3] = f[i + _SW];
+            fTmp[i + _S - 3] = f[i + _S];
+            fTmp[i + _SE + 3 * dimY - 3] = f[i + _SE];
+            fTmp[i + _W - 3 * dimY] = f[i + _W];
+            fTmp[i + _C] = f[i + _C];
+            fTmp[i + _E + 3 * dimY] = f[i + _E];
+            fTmp[i + _NW - 3 * dimY + 3] = f[i + _NW];
+            fTmp[i + _N + 3] = f[i + _N];
+            fTmp[i + _NE + 3 * dimY + 3] = f[i + _NE];
 
-                    //Stream update to neighbors
-                    fTmp[i + _SW - 3 * dimY - 3] = f[i + _SW];
-                    fTmp[i + _S - 3] = f[i + _S];
-                    fTmp[i + _SE + 3 * dimY - 3] = f[i + _SE];
-                    fTmp[i + _W - 3 * dimY] = f[i + _W];
-                    fTmp[i + _C] = f[i + _C];
-                    fTmp[i + _E + 3 * dimY] = f[i + _E];
-                    fTmp[i + _NW - 3 * dimY + 3] = f[i + _NW];
-                    fTmp[i + _N + 3] = f[i + _N];
-                    fTmp[i + _NE + 3 * dimY + 3] = f[i + _NE];
-
-                }
-            }
         }
     }
 
