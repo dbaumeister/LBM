@@ -18,24 +18,24 @@ void OptD2Q9::collision(double& rho, double* u, double& uSquare, const int i) {
 
     //cs = 1 / sqrt(3)
     double c_u = u[0] + u[1];
-    double feq = rho * wcorner * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
-    double feqinv = feq - 2 * rho * wcorner * 3.f * c_u;
+    double feq = rho * wcorner * (1 + 3 * c_u + 4.5 * c_u * c_u - 1.5 * uSquare);
+    double feqinv = feq - 6 * rho * wcorner * c_u;
 
     double t1 = omegaInv * f[i + _NE] + omega * feq;
     f[i + _NE]  = omegaInv * f[i + _SW] + omega * feqinv;
     f[i + _SW] = t1;
 
     c_u = u[0] - u[1];
-    feq = rho * wcorner * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
-    feqinv = feq - 2 * rho * wcorner * 3.f * c_u;
+    feq = rho * wcorner * (1 + 3 * c_u + 4.5 * c_u * c_u - 1.5 * uSquare);
+    feqinv = feq - 6 * rho * wcorner * c_u;
 
     double t2 = omegaInv * f[i + _SE] + omega * feq;
     f[i + _SE] = omegaInv * f[i + _NW] + omega * feqinv;
     f[i + _NW] = t2;
 
     c_u = u[1];
-    feq = rho * wedge * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
-    feqinv = feq - 2 * rho * wedge * 3.f * c_u;
+    feq = rho * wedge * (1 + 3 * c_u + 4.5 * c_u * c_u - 1.5 * uSquare);
+    feqinv = feq - 6 * rho * wedge * c_u;
 
     double t3 = omegaInv * f[i + _N] + omega * feq;
     f[i + _N] = omegaInv * f[i + _S] + omega * feqinv;
@@ -43,14 +43,14 @@ void OptD2Q9::collision(double& rho, double* u, double& uSquare, const int i) {
 
 
     c_u = u[0];
-    feq = rho * wedge * (1.f + 3.f * c_u + 4.5f * c_u * c_u - 1.5f * uSquare);
-    feqinv = feq - 2 * rho * wedge * 3.f * c_u;
+    feq = rho * wedge * (1 + 3 * c_u + 4.5 * c_u * c_u - 1.5 * uSquare);
+    feqinv = feq - 6 * rho * wedge * c_u;
 
     double t4 = omegaInv * f[i + _E] + omega * feq;
     f[i + _E] = omegaInv * f[i + _W] + omega * feqinv;
     f[i + _W] = t4;
 
-    f[i + _C] = omegaInv * f[i + _C] + omega * rho * wcenter * (1.f - 1.5f * uSquare);
+    f[i + _C] = omegaInv * f[i + _C] + omega * rho * wcenter * (1 - 1.5 * uSquare);
 }
 
 void OptD2Q9::next() {
