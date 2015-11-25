@@ -10,9 +10,6 @@ static const double wcenter = 4./9.;
 
 static const double omegaInv = 1 - omega;
 
-
-static const int BLOCK_SIZE = 8;
-
 void OptD2Q9::collision(double& rho, double* u, double& uSquare, const int i) {
     rho = f[i + _SW] + f[i + _S] + f[i + _SE] + f[i + _W] + f[i + _C] + f[i + _E] + f[i + _NW] + f[i + _N] + f[i + _NE];
     u[0] = (- f[i + _SW] + f[i + _SE] - f[i + _W] + f[i + _E]  - f[i + _NW] + f[i + _NE]) / rho;
