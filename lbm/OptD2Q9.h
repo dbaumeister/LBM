@@ -11,18 +11,13 @@ class OptD2Q9 : public D2Q9{
 
 public:
     OptD2Q9(int dimX, int dimY)
-            : D2Q9(dimX, dimY),
-              fTmp(calloc64ByteAligned(dimX * dimY * 9 * sizeof(double))){}
+            : D2Q9(dimX, dimY){}
 
-    ~OptD2Q9() {
-        free(fTmp);
-    }
+    ~OptD2Q9() {}
 
     void next();
 
 private:
-    double* fTmp;
-
     //Collision is always done the same -> inlined function to avoid return jumps
     inline void collision(double& rho, double* u, double& uSquare, int i);
 };
