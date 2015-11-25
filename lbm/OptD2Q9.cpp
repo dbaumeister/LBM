@@ -51,6 +51,12 @@ void OptD2Q9::collision(double& rho, double* u, double& uSquare, const int i) {
 
     f[i + _C] = omegaInv * f[i + _C] + omega * rho * wcenter * (1.f - 1.5f * uSquare);
 
+    //TODO implicit swap
+    std::swap(f[i + _SW], f[i + _NE]); //SW & NE
+    std::swap(f[i + _S], f[i + _N]); //S & N
+    std::swap(f[i + _SE], f[i + _NW]); //SE & NW
+    std::swap(f[i + _W], f[i + _E]); //W & E
+
 }
 
 void OptD2Q9::next() {
@@ -60,47 +66,21 @@ void OptD2Q9::next() {
 
     //lower left corner = SW
     collision(rho, &u[0], uSquare, i);
-    fTmp[_NE] = f[_SW]; //BC
-    fTmp[_N] = f[_S]; //BC
-    fTmp[_NW] = f[_SE]; //BC
-    fTmp[_E] = f[_W]; //BC
-    fTmp[_C] = f[_C];
-    fTmp[_E + 3 * dimY] = f[_E];
-    fTmp[_SE] = f[_NW]; //BC
-    fTmp[_N + 3] = f[_N];
-    fTmp[_NE + 3 * dimY + 3] = f[_NE];
 
     //left boundary = W
     for(int iY = 1; iY < dimY - 1; ++iY) {
         i += 3;
         collision(rho, &u[0], uSquare, i);
-        fTmp[i + _NE] = f[i + _SW]; //BC
-        fTmp[i + _S - 3] = f[i + _S];
-        fTmp[i + _SE + 3 * dimY - 3] = f[i + _SE];
-        fTmp[i + _E] = f[i + _W]; //BC
-        fTmp[i + _C] = f[i + _C];
-        fTmp[i + _E + 3 * dimY] = f[i + _E];
-        fTmp[i + _SE] = f[i + _NW]; //BC
-        fTmp[i + _N + 3] = f[i + _N];
-        fTmp[i + _NE + 3 * dimY + 3] = f[i + _NE];
+        std::swap(f[i + _N], f[i + _S - 3]);
     }
 
     //upper left corner = NW
     i += 3;
     collision(rho, &u[0], uSquare, i);
-    fTmp[i + _NE] = f[i + _SW]; //BC
-    fTmp[i + _S - 3] = f[i + _S];
-    fTmp[i + _SE + 3 * dimY - 3] = f[i + _SE];
-    fTmp[i + _E] = f[i + _W]; //BC
-    fTmp[i + _C] = f[i + _C];
-    fTmp[i + _E + 3 * dimY] = f[i + _E];
-    fTmp[i + _S] = f[i + _N]; //BC
+    std::swap(f[i + _N], f[i + _S - 3]);
 #ifdef CAVITY
-    fTmp[i + _SE] = f[i + _NW] + 0.3/36.; //BC
-    fTmp[i + _SW] = f[i + _NE] - 0.3/36.; //BC
-#else
-    fTmp[i + _SE] = f[i + _NW]; //BC
-    fTmp[i + _SW] = f[i + _NE]; //BC
+    f[i + _SE] += 0.3/36.; //BC
+    f[i + _SW] -= 0.3/36.; //BC
 #endif
 
     //lower boundary = S
@@ -108,111 +88,68 @@ void OptD2Q9::next() {
     for(int iX = 1; iX < dimX - 1; ++iX) {
         i += dimY3;
         collision(rho, &u[0], uSquare, i);
-        fTmp[i + _NE] = f[i + _SW]; //BC
-        fTmp[i + _N] = f[i + _S]; //BC
-        fTmp[i + _NW] = f[i + _SE]; //BC
-        fTmp[i + _W - 3 * dimY] = f[i + _W];
-        fTmp[i + _C] = f[i + _C];
-        fTmp[i + _E + 3 * dimY] = f[i + _E];
-        fTmp[i + _NW - 3 * dimY + 3] = f[i + _NW];
-        fTmp[i + _N + 3] = f[i + _N];
-        fTmp[i + _NE + 3 * dimY + 3] = f[i + _NE];
-
+        std::swap(f[i + _E], f[i + _W - dimY3]);
     }
-
-
-    //lower right corner = SE
-    i += dimY3;
-    collision(rho, &u[0], uSquare, i);
-    fTmp[i + _NE] = f[i + _SW]; //BC
-    fTmp[i + _N] = f[i + _S]; //BC
-    fTmp[i + _NW] = f[i + _SE]; //BC
-    fTmp[i + _W - 3 * dimY] = f[i + _W];
-    fTmp[i + _C] = f[i + _C];
-    fTmp[i + _W] = f[i + _E]; //BC
-    fTmp[i + _NW - 3 * dimY + 3] = f[i + _NW];
-    fTmp[i + _N + 3] = f[i + _N];
-    fTmp[i + _SW] = f[i + _NE]; //BC
 
     //inner block
     for(int iX = 1; iX < dimX - 1; ++iX) {
         int i = iX * dimY3;
         for (int iY = 1; iY < dimY - 1; ++iY) {
+
+            // X * *
+            // X o *
+            // X X *
+            // Only swap with X neighbors, because they have already been accessed
+
             i += 3;
             collision(rho, &u[0], uSquare, i);
 
             //Stream update to neighbors
-            fTmp[i + _SW - 3 * dimY - 3] = f[i + _SW];
-            fTmp[i + _S - 3] = f[i + _S];
-            fTmp[i + _SE + 3 * dimY - 3] = f[i + _SE];
-            fTmp[i + _W - 3 * dimY] = f[i + _W];
-            fTmp[i + _C] = f[i + _C];
-            fTmp[i + _E + 3 * dimY] = f[i + _E];
-            fTmp[i + _NW - 3 * dimY + 3] = f[i + _NW];
-            fTmp[i + _N + 3] = f[i + _N];
-            fTmp[i + _NE + 3 * dimY + 3] = f[i + _NE];
-
+            std::swap(f[i + _E], f[i + _W - dimY3]);
+            std::swap(f[i + _NE], f[i + _SW - dimY3 - 3]);
+            std::swap(f[i + _SE], f[i + _NW - dimY3 + 3]);
+            std::swap(f[i + _N], f[i + _S - 3]);
         }
+
+        //upper boundary = N
+        i += 3;
+        collision(rho, &u[0], uSquare, i);
+        std::swap(f[i + _E], f[i + _W - dimY3]);
+        std::swap(f[i + _NE], f[i + _SW - dimY3 - 3]);
+        std::swap(f[i + _N], f[i + _S - 3]);
+#ifdef CAVITY
+        f[i + _SE] += 0.3/36.; //BC
+        f[i + _SW] -= 0.3/36.; //BC
+#endif
+
     }
 
+    //lower right corner = SE
+    i += dimY3;
+    collision(rho, &u[0], uSquare, i);
+    std::swap(f[i + _E], f[i + _W - dimY3]);
+    std::swap(f[i + _SE], f[i + _NW - dimY3 + 3]);
 
     //right boundary = E
     for(int iY = 1; iY < dimY - 1; ++iY) {
         i += 3;
         collision(rho, &u[0], uSquare, i);
-        fTmp[i + _SW - 3 * dimY - 3] = f[i + _SW];
-        fTmp[i + _S - 3] = f[i + _S];
-        fTmp[i + _NW] = f[i + _SE]; //BC
-        fTmp[i + _W - 3 * dimY] = f[i + _W];
-        fTmp[i + _C] = f[i + _C];
-        fTmp[i + _W] = f[i + _E]; //BC
-        fTmp[i + _NW - 3 * dimY + 3] = f[i + _NW];
-        fTmp[i + _N + 3] = f[i + _N];
-        fTmp[i + _SW] = f[i + _NE]; // BC
+        std::swap(f[i + _E], f[i + _W - dimY3]);
+        std::swap(f[i + _NE], f[i + _SW - dimY3 - 3]);
+        std::swap(f[i + _SE], f[i + _NW - dimY3 + 3]);
+        std::swap(f[i + _N], f[i + _S - 3]);
 
     }
 
     //upper right corner
     i += 3;
     collision(rho, &u[0], uSquare, i);
-    fTmp[i + _SW - 3 * dimY - 3] = f[i + _SW];
-    fTmp[i + _S - 3] = f[i + _S];
-    fTmp[i + _NW] = f[i + _SE]; // BC
-    fTmp[i + _W - 3 * dimY] = f[i + _W];
-    fTmp[i + _C] = f[i + _C];
-    fTmp[i + _W] = f[i + _E]; // BC
-
-    fTmp[i + _S] = f[i + _N]; //BC
+    std::swap(f[i + _E], f[i + _W - dimY3]);
+    std::swap(f[i + _NE], f[i + _SW - dimY3 - 3]);
+    std::swap(f[i + _N], f[i + _S - 3]);
 
 #ifdef CAVITY
-    fTmp[i + _SE] = f[i + _NW] + 0.3/36. ; //BC
-    fTmp[i + _SW] = f[i + _NE] - 0.3/36. ; //BC
-#else
-    fTmp[i + _SE] = f[i + _NW]; //BC
-    fTmp[i + _SW] = f[i + _NE]; //BC
+    f[i + _SE] += 0.3/36.; //BC
+    f[i + _SW] -= 0.3/36.; //BC
 #endif
-
-    //upper boundary = N
-    i = 3 * (dimY - 1);
-    for(int iX = 1; iX < dimX - 1; ++iX) {
-        i += dimY3;
-        collision(rho, &u[0], uSquare, i);
-        fTmp[i + _SW - 3 * dimY - 3] = f[i + _SW];
-        fTmp[i + _S - 3] = f[i + _S];
-        fTmp[i + _SE + 3 * dimY - 3] = f[i + _SE];
-        fTmp[i + _W - 3 * dimY] = f[i + _W];
-        fTmp[i + _C] = f[i + _C];
-        fTmp[i + _E + 3 * dimY] = f[i + _E];
-        fTmp[i + _S] = f[i + _N]; //BC
-#ifdef CAVITY
-        fTmp[i + _SE] = f[i + _NW] + 0.3/36.; //BC
-        fTmp[i + _SW] = f[i + _NE] - 0.3/36.; //BC
-#else
-        fTmp[i + _SE] = f[i + _NW]; //BC
-        fTmp[i + _SW] = f[i + _NE]; //BC
-#endif
-    }
-
-    //Swap array pointers
-    std::swap(f, fTmp);
 }
