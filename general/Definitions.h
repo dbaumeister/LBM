@@ -16,7 +16,7 @@ static const int N = GRID_SIZE * GRID_SIZE;
 //#define SHOW_GUI
 
 //Defining CAVITY shows another setup on the simple and block implementation
-//#define CAVITY
+#define CAVITY
 
 //Define OUTPUT_TO_LOGFILE to redirect std::cout to the file "log"
 #define OUTPUT_TO_LOGFILE

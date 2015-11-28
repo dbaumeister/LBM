@@ -77,17 +77,14 @@ void OptD2Q9::next() {
     f[i + _SW] -= 0.3/36.; //BC
 #endif
 
-    //lower boundary = S
-    i = 0;
     for(int iX = 1; iX < dimX - 1; ++iX) {
-        i += dimY3;
+        i = iX * dimY3;
+
+        //lower boundary = S
         collision(rho, &u[0], uSquare, i);
         std::swap(f[i + _E], f[i + _W - dimY3]);
-    }
 
-    //inner block
-    for(int iX = 1; iX < dimX - 1; ++iX) {
-        int i = iX * dimY3;
+        //inner block
         for (int iY = 1; iY < dimY - 1; ++iY) {
 
             // X * *
@@ -117,7 +114,7 @@ void OptD2Q9::next() {
     }
 
     //lower right corner = SE
-    i += dimY3;
+    i += 3;
     collision(rho, &u[0], uSquare, i);
     std::swap(f[i + _E], f[i + _W - dimY3]);
     std::swap(f[i + _SE], f[i + _NW - dimY3 + 3]);
